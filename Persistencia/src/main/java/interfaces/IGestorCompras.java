@@ -1,19 +1,18 @@
 /*
- * IGestorVentas.java
+ * IGestorCompras.java
  */
 package interfaces;
 
 import excepciones.PersistenciaException;
 import java.time.LocalDateTime;
 import java.util.List;
-import pojos.Venta;
+import pojos.Compra;
 
 /**
- * Define las operaciones basicas para gestionar ventas en el sistema.
  *
  * @author Juventino López García - 00000248547
  */
-public interface IGestorVentas {
+public interface IGestorCompras {
 
     /**
      * Busca una venta a partir de su ID.
@@ -22,7 +21,7 @@ public interface IGestorVentas {
      * @return Venta si se encuentra, null en caso contrario.
      * @throws PersistenciaException
      */
-    public Venta consultarVenta(Long id) throws PersistenciaException;
+    public Compra consultarCompra(Long id) throws PersistenciaException;
 
     /**
      * Regresa una lista de las ventas hechas por el usuario con el ID
@@ -32,7 +31,7 @@ public interface IGestorVentas {
      * @return
      * @throws PersistenciaException
      */
-    public List<Venta> consultarVentasDeUsuario(Long usuarioId) throws PersistenciaException;
+    public List<Compra> consultarComprasAProveedor(Long usuarioId) throws PersistenciaException;
 
     /**
      * Regresa una lista de ventas en el periodo especificado.
@@ -42,7 +41,7 @@ public interface IGestorVentas {
      * @return
      * @throws PersistenciaException
      */
-    public List<Venta> consultarVentasPorPeriodo(LocalDateTime inicio, LocalDateTime fin) throws PersistenciaException;
+    public List<Compra> consultarComprasPorPeriodo(LocalDateTime inicio, LocalDateTime fin) throws PersistenciaException;
 
     /**
      * Regresa una lista con todas las ventas existentes.
@@ -50,7 +49,7 @@ public interface IGestorVentas {
      * @return
      * @throws PersistenciaException
      */
-    public List<Venta> consultarTodos() throws PersistenciaException;
+    public List<Compra> consultarTodos() throws PersistenciaException;
 
     /**
      * Registra una nueva venta.
@@ -58,7 +57,7 @@ public interface IGestorVentas {
      * @param venta Venta a guardar.
      * @throws PersistenciaException
      */
-    public void registrarVenta(Venta venta) throws PersistenciaException;
+    public void registrarCompra(Compra venta) throws PersistenciaException;
 
     /**
      * Modifica la informacion de la venta en cuestion.
@@ -66,7 +65,7 @@ public interface IGestorVentas {
      * @param venta Venta a modificar.
      * @throws PersistenciaException
      */
-    public void actualizarVenta(Venta venta) throws PersistenciaException;
+    public void actualizarCompra(Compra venta) throws PersistenciaException;
 
     /**
      * Elimina una venta con el ID de la venta especificado.
@@ -74,5 +73,5 @@ public interface IGestorVentas {
      * @param ventaId ID de la venta a eliminar.
      * @throws PersistenciaException
      */
-    public void eliminarVenta(Long ventaId) throws PersistenciaException;
+    public void eliminarCompra(Long ventaId) throws PersistenciaException;
 }
