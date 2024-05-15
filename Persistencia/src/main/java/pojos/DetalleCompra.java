@@ -11,22 +11,14 @@ import org.bson.types.ObjectId;
  */
 public class DetalleCompra {
 
-    private ObjectId id;
-
     private Integer cantidad;
+    
+    private Float costo;
 
     private ObjectId producto;
 
     public DetalleCompra() {
         
-    }
-
-    public ObjectId getId() {
-        return id;
-    }
-
-    public void setId(ObjectId id) {
-        this.id = id;
     }
 
     public Integer getCantidad() {
@@ -37,6 +29,14 @@ public class DetalleCompra {
         this.cantidad = cantidad;
     }
 
+    public Float getCosto() {
+        return costo;
+    }
+
+    public void setCosto(Float costo) {
+        this.costo = costo;
+    }
+
     public ObjectId getProducto() {
         return producto;
     }
@@ -44,6 +44,5 @@ public class DetalleCompra {
     public void setProducto(ObjectId producto) {
         this.producto = producto;
     }
-    
-    
+       
 }

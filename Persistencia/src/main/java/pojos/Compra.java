@@ -15,6 +15,8 @@ public class Compra {
 
     private ObjectId id;
     
+    private String folio;
+    
     private Float montoTotal;
     
     private LocalDateTime fecha;
@@ -35,6 +37,15 @@ public class Compra {
         this.id = id;
     }
 
+    public String getFolio() {
+        return folio;
+    }
+
+    public void setFolio(String folio) {
+        this.folio = folio;
+    }
+
+    
     public Float getMontoTotal() {
         return montoTotal;
     }

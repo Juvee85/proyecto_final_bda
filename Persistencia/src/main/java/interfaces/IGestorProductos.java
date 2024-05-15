@@ -5,6 +5,7 @@ package interfaces;
 
 import excepciones.PersistenciaException;
 import java.util.List;
+import org.bson.types.ObjectId;
 import pojos.Producto;
 import pojos.Proveedor;
 
@@ -47,7 +48,7 @@ public interface IGestorProductos {
     /**
      * Registra un producto en el sistema.
      *
-     * @param producto
+     * @param producto Producto a registrar
      * @throws PersistenciaException
      */
     public void registrarProducto(Producto producto) throws PersistenciaException;
@@ -68,7 +69,7 @@ public interface IGestorProductos {
      * @return Producto si se encuentra, null en caso contrario.
      * @throws PersistenciaException
      */
-    public Producto consultarProducto(Long productoId) throws PersistenciaException;
+    public Producto consultarProducto(ObjectId productoId) throws PersistenciaException;
 
     /**
      * Actualiza la informacion del producto dado.

@@ -18,11 +18,11 @@ public interface IGestorVentas {
     /**
      * Busca una venta a partir de su ID.
      *
-     * @param id numero identificador de la venta.
+     * @param folio numero identificador de la venta.
      * @return Venta si se encuentra, null en caso contrario.
      * @throws PersistenciaException
      */
-    public Venta consultarVenta(Long id) throws PersistenciaException;
+    public Venta consultarVenta(String folio) throws PersistenciaException;
 
     /**
      * Regresa una lista de las ventas hechas por el usuario con el ID

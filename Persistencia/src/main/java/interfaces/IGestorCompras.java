@@ -6,6 +6,7 @@ package interfaces;
 import excepciones.PersistenciaException;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.bson.types.ObjectId;
 import pojos.Compra;
 
 /**
@@ -21,7 +22,7 @@ public interface IGestorCompras {
      * @return Venta si se encuentra, null en caso contrario.
      * @throws PersistenciaException
      */
-    public Compra consultarCompra(Long id) throws PersistenciaException;
+    public Compra consultarCompra(ObjectId id) throws PersistenciaException;
 
     /**
      * Regresa una lista de las ventas hechas por el usuario con el ID
@@ -73,5 +74,5 @@ public interface IGestorCompras {
      * @param ventaId ID de la venta a eliminar.
      * @throws PersistenciaException
      */
-    public void eliminarCompra(Long ventaId) throws PersistenciaException;
+    public void eliminarCompra(ObjectId ventaId) throws PersistenciaException;
 }

@@ -4,37 +4,53 @@
 package pojos;
 
 import java.time.LocalDate;
-import java.util.List;
+import org.bson.Document;
 import org.bson.types.ObjectId;
 
 /**
- * 
+ * Clase con la información necesaria para guardar un usuario en la base de
+ * datos
+ *
  * @author Juventino López García - 00000248547
  */
 public class Usuario {
 
-    private ObjectId id;  
-    
+    private ObjectId id;
+
+    private String rfc;
+
     private String nombre;
-    
+
     private String apellidoPaterno;
-    
+
     private String apellidoMaterno;
-    
+
     private String contrasenha;
-    
-    private String puesto;
-    
+
+    private Puesto puesto;
+
     private String telefono;
-    
+
     private LocalDate fechaContratacion;
-    
+
     private Direccion direccion;
     
-    private List<ObjectId> ventasRealizadas;
-    
+    private Boolean eliminado;
+
     public Usuario() {
-        
+
+    }
+
+    public Usuario(String rfc, String nombre, String apellidoPaterno, String apellidoMaterno, String contrasenha, Puesto puesto, String telefono, LocalDate fechaContratacion, Direccion direccion) {
+        this.rfc = rfc;
+        this.nombre = nombre;
+        this.apellidoPaterno = apellidoPaterno;
+        this.apellidoMaterno = apellidoMaterno;
+        this.contrasenha = contrasenha;
+        this.puesto = puesto;
+        this.telefono = telefono;
+        this.fechaContratacion = fechaContratacion;
+        this.direccion = direccion;
     }
 
     public ObjectId getId() {
@@ -43,6 +59,14 @@ public class Usuario {
 
     public void setId(ObjectId id) {
         this.id = id;
+    }
+
+    public String getRfc() {
+        return rfc;
+    }
+
+    public void setRfc(String rfc) {
+        this.rfc = rfc;
     }
 
     public String getNombre() {
@@ -77,11 +101,11 @@ public class Usuario {
         this.contrasenha = contrasenha;
     }
 
-    public String getPuesto() {
+    public Puesto getPuesto() {
         return puesto;
     }
 
-    public void setPuesto(String puesto) {
+    public void setPuesto(Puesto puesto) {
         this.puesto = puesto;
     }
 
@@ -109,12 +133,26 @@ public class Usuario {
         this.direccion = direccion;
     }
 
-    public List<ObjectId> getVentasRealizadas() {
-        return ventasRealizadas;
+    public Boolean getEliminado() {
+        return eliminado;
     }
 
-    public void setVentasRealizadas(List<ObjectId> ventasRealizadas) {
-        this.ventasRealizadas = ventasRealizadas;
+    public void setEliminado(Boolean eliminado) {
+        this.eliminado = eliminado;
     }
-    
+
+    public Document toDocument() {
+        Document documento = new Document();
+        documento.append("rfc", rfc);
+        documento.append("nombre", nombre);
+        documento.append("apellidoPaterno", apellidoPaterno);
+        documento.append("apellidoMaterno", apellidoMaterno);
+        documento.append("contrasenha", contrasenha);
+        documento.append("puesto", puesto);
+        documento.append("telefono", telefono);
+        documento.append("fechaContratacion", fechaContratacion);
+        documento.append("direccion", direccion);
+        return documento;
+    }
+
 }

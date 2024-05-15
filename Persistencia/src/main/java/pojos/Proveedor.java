@@ -4,7 +4,6 @@
 package pojos;
 
 import java.time.LocalDate;
-import java.util.List;
 import org.bson.types.ObjectId;
 
 /**
@@ -26,8 +25,6 @@ public class Proveedor {
     private LocalDate fechaRegistro;
 
     private Direccion direccion;
-
-    private List<ObjectId> comprasRealizadas;
 
     public Proveedor() {
 
@@ -88,13 +85,5 @@ public class Proveedor {
     public void setDireccion(Direccion direccion) {
         this.direccion = direccion;
     }
-
-    public List<ObjectId> getComprasRealizadas() {
-        return comprasRealizadas;
-    }
-
-    public void setComprasRealizadas(List<ObjectId> comprasRealizadas) {
-        this.comprasRealizadas = comprasRealizadas;
-    }
-
+    
 }

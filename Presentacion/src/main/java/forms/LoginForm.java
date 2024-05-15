@@ -3,6 +3,15 @@
  */
 package forms;
 
+import dtos.UsuarioDTO;
+import excepciones.NegocioException;
+import interfaces.IIniciarSesionBO;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import negocio.IniciarSesionBO;
+import pojos.Puesto;
+
 /**
  *
  * @author Juventino López García - 00000248547
@@ -25,22 +34,126 @@ public class LoginForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        telefonoTxt = new javax.swing.JTextField();
+        inicioBtn = new javax.swing.JButton();
+        contrasenhaPass = new javax.swing.JPasswordField();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
+
+        jLabel1.setText("Inicio de sesión");
+
+        jLabel2.setText("Telefono:");
+
+        jLabel3.setText("Contraseña:");
+
+        telefonoTxt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                telefonoTxtActionPerformed(evt);
+            }
+        });
+
+        inicioBtn.setText("Iniciar");
+        inicioBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inicioBtnActionPerformed(evt);
+            }
+        });
+
+        contrasenhaPass.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                contrasenhaPassActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(inicioBtn)
+                .addGap(126, 126, 126))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(273, 273, 273)
+                        .addComponent(jLabel1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(142, 142, 142)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3))
+                        .addGap(28, 28, 28)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(telefonoTxt)
+                            .addComponent(contrasenhaPass))))
+                .addContainerGap(296, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(59, 59, 59)
+                .addComponent(jLabel1)
+                .addGap(64, 64, 64)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(telefonoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(contrasenhaPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(70, 70, 70)
+                .addComponent(inicioBtn)
+                .addContainerGap(242, Short.MAX_VALUE))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void inicioBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inicioBtnActionPerformed
+        iniciarSesion();
+    }//GEN-LAST:event_inicioBtnActionPerformed
+
+    private void telefonoTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_telefonoTxtActionPerformed
+        iniciarSesion();
+    }//GEN-LAST:event_telefonoTxtActionPerformed
+
+    private void contrasenhaPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_contrasenhaPassActionPerformed
+        iniciarSesion();
+    }//GEN-LAST:event_contrasenhaPassActionPerformed
+
+    private void iniciarSesion() {
+        IIniciarSesionBO iniciarSesionBO = new IniciarSesionBO();
+
+        try {
+            UsuarioDTO usuario = iniciarSesionBO.iniciarSesion(telefonoTxt.getText(), new String(contrasenhaPass.getPassword()));
+            if (usuario != null) {
+                
+                if (usuario.getPuesto().equals(Puesto.GERENTE)) {
+                    new inicioGerenteForm(usuario).setVisible(true);
+                } else if (usuario.getPuesto().equals(Puesto.CAJERO)) {
+                    new inicioCajeroForm(usuario).setVisible(true);
+                }
+                
+                this.dispose();
+            }
+        } catch (NegocioException ex) {
+            Logger.getLogger(LoginForm.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPasswordField contrasenhaPass;
+    private javax.swing.JButton inicioBtn;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JTextField telefonoTxt;
     // End of variables declaration//GEN-END:variables
 }

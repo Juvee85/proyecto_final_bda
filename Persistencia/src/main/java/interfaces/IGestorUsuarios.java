@@ -4,6 +4,8 @@
 package interfaces;
 
 import excepciones.PersistenciaException;
+import java.util.List;
+import org.bson.types.ObjectId;
 import pojos.Usuario;
 
 /**
@@ -20,7 +22,9 @@ public interface IGestorUsuarios {
      * @return Usuario si se encuentra, null en caso contrario
      * @throws PersistenciaException En caso de error
      */
-    public Usuario consultarUsuario(Long id) throws PersistenciaException;
+    public Usuario consultarUsuario(ObjectId id) throws PersistenciaException;
+
+    public List<Usuario> consultarTodos() throws PersistenciaException;
 
     /**
      * Busca al usuario con el telefono especificado y lo regresa.
@@ -56,18 +60,18 @@ public interface IGestorUsuarios {
      * @throws PersistenciaException En caso de que no se pueda eliminar el
      * usuario.
      */
-    public void eliminarUsuario(Long id) throws PersistenciaException;
+    public void eliminarUsuario(ObjectId id) throws PersistenciaException;
 
     /**
      * Verifica si las credenciales de usuario proporcionadas coinciden con la
      * presente en el sistema y regresa al usuario con esas credenciales.
      *
      * @param telefono Telefono del usuario.
-     * @param contrasena Contrasena del usuario.
+     * @param contrasenha Contrasena del usuario.
      * @return
      * @throws PersistenciaException En caso de cualquier error en el incio de
      * sesion del usuaro, telefono o contrasena incorrectos, errores internos,
      * etc.
      */
-    public Usuario iniciarSesion(String telefono, String contrasena) throws PersistenciaException;
+    public Usuario iniciarSesion(String telefono, String contrasenha) throws PersistenciaException;
 }

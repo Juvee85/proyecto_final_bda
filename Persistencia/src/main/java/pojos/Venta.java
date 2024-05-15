@@ -15,11 +15,13 @@ public class Venta {
 
     private ObjectId id;
     
+    private String folio;
+    
     private String nombreCliente;
     
     private String apellidoCliente;
     
-    private String metodoPago;
+    private MetodoPago metodoPago;
     
     private Float montoTotal;
     
@@ -41,6 +43,14 @@ public class Venta {
         this.id = id;
     }
 
+    public String getFolio() {
+        return folio;
+    }
+
+    public void setFolio(String folio) {
+        this.folio = folio;
+    }
+
     public String getNombreCliente() {
         return nombreCliente;
     }
@@ -57,11 +67,11 @@ public class Venta {
         this.apellidoCliente = apellidoCliente;
     }
 
-    public String getMetodoPago() {
+    public MetodoPago getMetodoPago() {
         return metodoPago;
     }
 
-    public void setMetodoPago(String metodoPago) {
+    public void setMetodoPago(MetodoPago metodoPago) {
         this.metodoPago = metodoPago;
     }
 
