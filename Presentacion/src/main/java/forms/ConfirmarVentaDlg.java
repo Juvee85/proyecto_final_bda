@@ -3,6 +3,7 @@
  */
 package forms;
 
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
 import pojos.MetodoPago;
@@ -19,6 +20,8 @@ public class ConfirmarVentaDlg extends javax.swing.JDialog {
 
     private MetodoPago metodoPago;
 
+    private final Float total;
+
     /**
      * Creates new form ConfirmarVentaDlg
      */
@@ -26,6 +29,7 @@ public class ConfirmarVentaDlg extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         iniciarComboBox();
+        this.total = total;
         totalLbl.setText(total.toString());
     }
 
@@ -43,24 +47,16 @@ public class ConfirmarVentaDlg extends javax.swing.JDialog {
         return nombreCliente;
     }
 
-    public void setNombreCliente(String nombreCliente) {
-        this.nombreCliente = nombreCliente;
-    }
-
     public String getApellidoCliente() {
         return apellidoCliente;
-    }
-
-    public void setApellidoCliente(String apellidoCliente) {
-        this.apellidoCliente = apellidoCliente;
     }
 
     public MetodoPago getMetodoPago() {
         return metodoPago;
     }
 
-    public void setMetodoPago(MetodoPago metodoPago) {
-        this.metodoPago = metodoPago;
+    private float calcularCambio(float pago) {
+        return (total != null && pago > total) ? pago - total : 0;
     }
 
     /**
@@ -87,6 +83,7 @@ public class ConfirmarVentaDlg extends javax.swing.JDialog {
         cambioLbl = new javax.swing.JLabel();
         aceptarBtn = new javax.swing.JButton();
         cancelarBtn = new javax.swing.JButton();
+        calcularBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
@@ -116,6 +113,30 @@ public class ConfirmarVentaDlg extends javax.swing.JDialog {
 
         totalLbl.setText("0");
 
+        cantidadPagoTxt.setText("0");
+        cantidadPagoTxt.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+                cantidadPagoTxtInputMethodTextChanged(evt);
+            }
+        });
+        cantidadPagoTxt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cantidadPagoTxtActionPerformed(evt);
+            }
+        });
+        cantidadPagoTxt.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                cantidadPagoTxtPropertyChange(evt);
+            }
+        });
+        cantidadPagoTxt.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                cantidadPagoTxtKeyTyped(evt);
+            }
+        });
+
         cambioLbl.setText("0");
 
         aceptarBtn.setText("Aceptar");
@@ -129,6 +150,13 @@ public class ConfirmarVentaDlg extends javax.swing.JDialog {
         cancelarBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelarBtnActionPerformed(evt);
+            }
+        });
+
+        calcularBtn.setText("Calcular");
+        calcularBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                calcularBtnActionPerformed(evt);
             }
         });
 
@@ -151,7 +179,9 @@ public class ConfirmarVentaDlg extends javax.swing.JDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addGap(18, 18, 18)
-                        .addComponent(cambioLbl))
+                        .addComponent(cambioLbl)
+                        .addGap(18, 18, 18)
+                        .addComponent(calcularBtn))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
@@ -200,8 +230,9 @@ public class ConfirmarVentaDlg extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
-                    .addComponent(cambioLbl))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                    .addComponent(cambioLbl)
+                    .addComponent(calcularBtn))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(aceptarBtn)
                     .addComponent(cancelarBtn))
@@ -227,9 +258,35 @@ public class ConfirmarVentaDlg extends javax.swing.JDialog {
         this.dispose();
     }//GEN-LAST:event_cancelarBtnActionPerformed
 
+    private void cantidadPagoTxtKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cantidadPagoTxtKeyTyped
+        char caracter = evt.getKeyChar();
+        if (!Character.isDigit(caracter) && caracter != KeyEvent.VK_BACK_SPACE && caracter != KeyEvent.VK_DELETE && caracter != KeyEvent.VK_ENTER) {
+            evt.consume();
+        }
+
+
+    }//GEN-LAST:event_cantidadPagoTxtKeyTyped
+
+    private void cantidadPagoTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cantidadPagoTxtActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cantidadPagoTxtActionPerformed
+
+    private void cantidadPagoTxtPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_cantidadPagoTxtPropertyChange
+
+    }//GEN-LAST:event_cantidadPagoTxtPropertyChange
+
+    private void cantidadPagoTxtInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_cantidadPagoTxtInputMethodTextChanged
+
+    }//GEN-LAST:event_cantidadPagoTxtInputMethodTextChanged
+
+    private void calcularBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calcularBtnActionPerformed
+        cambioLbl.setText(String.valueOf(calcularCambio(Float.parseFloat(cantidadPagoTxt.getText()))));
+    }//GEN-LAST:event_calcularBtnActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton aceptarBtn;
     private javax.swing.JTextField apellidoTxt;
+    private javax.swing.JButton calcularBtn;
     private javax.swing.JLabel cambioLbl;
     private javax.swing.JButton cancelarBtn;
     private javax.swing.JTextField cantidadPagoTxt;

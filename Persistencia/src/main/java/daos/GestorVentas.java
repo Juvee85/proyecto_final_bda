@@ -19,6 +19,7 @@ import interfaces.IGestorVentas;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import pojos.DetalleVenta;
 import pojos.Venta;
 
 /**
@@ -83,9 +84,14 @@ public class GestorVentas implements IGestorVentas {
     @Override
     public void registrarVenta(Venta venta) throws PersistenciaException {
         try {
+            GestorProductos gestor = GestorProductos.getInstance();
+            for (DetalleVenta detalle : venta.getDetalles()) {
+                gestor.registrarExistenciaProducto(detalle.getProducto(),
+                         -detalle.getCantidad());
+            }
             COLECCION_VENTAS.insertOne(venta);
         } catch (MongoWriteException e) {
-            throw new PersistenciaException("Error al registrar la venta: " + e.getMessage());
+            throw new PersistenciaException("Error al registrar la venta");
         }
 
     }

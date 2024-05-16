@@ -106,6 +106,4 @@ public class Producto {
         this.eliminado = eliminado;
     }
     
-    
-    
 }

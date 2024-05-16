@@ -35,9 +35,10 @@ public class Pruebas {
     public static void insertarGerente() {
         try {
             Usuario usuario = new Usuario();
-            usuario.setNombre("Joaquin");
-            usuario.setApellidoPaterno("Felix");
-            usuario.setApellidoMaterno("Garza");
+            usuario.setRfc("QUTORJAZ12122002TG3D");
+            usuario.setNombre("Jazmin");
+            usuario.setApellidoPaterno("Quezada");
+            usuario.setApellidoMaterno("Torres");
             usuario.setContrasenha(encriptar("admin"));
             usuario.setFechaContratacion(LocalDate.now());
             usuario.setTelefono("6441234567");
@@ -64,13 +65,17 @@ public class Pruebas {
         producto.setCodigo("PROD1");
         producto.setNombre("Producto 1");
         producto.setStock(6);
+        producto.setStockExceso(24);
+        producto.setStockMinimo(6);
         producto.setPrecio(45f);
         
         Producto producto2 = new Producto();
 
-        producto2.setCodigo("PROD12");
+        producto2.setCodigo("PROD2");
         producto2.setNombre("Producto 2");
         producto2.setStock(13);
+        producto2.setStockExceso(30);
+        producto2.setStockMinimo(8);
         producto2.setPrecio(39f);
         
         Producto producto3 = new Producto();
@@ -78,12 +83,14 @@ public class Pruebas {
         producto3.setCodigo("PROD3");
         producto3.setNombre("Producto 3");
         producto3.setStock(25);
+        producto3.setStockExceso(50);
+        producto3.setStockMinimo(15);
         producto3.setPrecio(15f);
         
         try {
-            GestorProductos.getnstance().registrarProducto(producto);
-            GestorProductos.getnstance().registrarProducto(producto2);
-            GestorProductos.getnstance().registrarProducto(producto3);
+            GestorProductos.getInstance().registrarProducto(producto);
+            GestorProductos.getInstance().registrarProducto(producto2);
+            GestorProductos.getInstance().registrarProducto(producto3);
         } catch (PersistenciaException ex) {
             Logger.getLogger(Pruebas.class.getName()).log(Level.SEVERE, null, ex);
         }

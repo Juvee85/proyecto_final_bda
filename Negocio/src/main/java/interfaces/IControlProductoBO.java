@@ -8,12 +8,14 @@ import excepciones.NegocioException;
 import java.util.List;
 
 /**
- * 
- * @author Juventino López García - 00000248547 
+ *
+ * @author Juventino López García - 00000248547
  */
 public interface IControlProductoBO {
 
-    public ProductoDTO obtenerProductoPorCodigo(String codigo)  throws NegocioException;
-    
-    public List<ProductoDTO> obtenerProductos()  throws NegocioException;
+    public ProductoDTO obtenerProductoPorCodigo(String codigo) throws NegocioException;
+
+    public List<ProductoDTO> obtenerProductos() throws NegocioException;
+
+    public void registrarProducto(ProductoDTO producto) throws NegocioException;
 }

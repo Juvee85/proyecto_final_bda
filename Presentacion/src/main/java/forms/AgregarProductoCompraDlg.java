@@ -17,16 +17,17 @@ import negocio.ControlProductosBO;
  *
  * @author Juventino López García - 00000248547
  */
-public class AgregarProductoDlg extends javax.swing.JDialog {
+public class AgregarProductoCompraDlg extends javax.swing.JDialog {
 
     private IControlProductoBO control = new ControlProductosBO();
     private ProductoDTO producto;
     private Integer cantidad;
+    private Float costo;
 
     /**
      * Creates new form AgregarProductoDlg
      */
-    public AgregarProductoDlg(java.awt.Frame parent, boolean modal) {
+    public AgregarProductoCompraDlg(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         llenarTablaProductos();
@@ -45,16 +46,15 @@ public class AgregarProductoDlg extends javax.swing.JDialog {
 
             if (listaProductos != null) {
                 listaProductos.forEach(row -> {
-                    Object[] fila = new Object[3];
+                    Object[] fila = new Object[2];
                     fila[0] = row.getCodigo();
                     fila[1] = row.getNombre();
-                    fila[2] = row.getPrecio();
 
                     modeloTabla.addRow(fila);
                 });
             }
         } catch (NegocioException ex) {
-            Logger.getLogger(AgregarProductoDlg.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AgregarProductoCompraDlg.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -62,16 +62,12 @@ public class AgregarProductoDlg extends javax.swing.JDialog {
         return producto;
     }
 
-    public void setProducto(ProductoDTO producto) {
-        this.producto = producto;
-    }
-
     public Integer getCantidad() {
         return cantidad;
     }
 
-    public void setCantidad(Integer cantidad) {
-        this.cantidad = cantidad;
+    public Float getCosto() {
+        return costo;
     }
 
     /**
@@ -89,6 +85,8 @@ public class AgregarProductoDlg extends javax.swing.JDialog {
         cancelarBtn = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         productoTabla = new javax.swing.JTable();
+        jLabel2 = new javax.swing.JLabel();
+        costoTxt = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setAlwaysOnTop(true);
@@ -124,17 +122,17 @@ public class AgregarProductoDlg extends javax.swing.JDialog {
 
         productoTabla.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
             },
             new String [] {
-                "Código", "Producto", "Precio"
+                "Código", "Producto"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -146,27 +144,34 @@ public class AgregarProductoDlg extends javax.swing.JDialog {
         if (productoTabla.getColumnModel().getColumnCount() > 0) {
             productoTabla.getColumnModel().getColumn(0).setResizable(false);
             productoTabla.getColumnModel().getColumn(1).setResizable(false);
-            productoTabla.getColumnModel().getColumn(2).setResizable(false);
         }
+
+        jLabel2.setText("Costo:");
+
+        costoTxt.setText("0");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(24, 24, 24)
+                .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cantidadSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(costoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(cancelarBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(agregarBtn)
-                .addGap(16, 16, 16))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(33, 33, 33)
+                .addGap(4, 4, 4))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addGap(43, 43, 43))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -178,7 +183,9 @@ public class AgregarProductoDlg extends javax.swing.JDialog {
                     .addComponent(jLabel1)
                     .addComponent(cantidadSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(agregarBtn)
-                    .addComponent(cancelarBtn))
+                    .addComponent(cancelarBtn)
+                    .addComponent(jLabel2)
+                    .addComponent(costoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(15, 15, 15))
         );
 
@@ -195,13 +202,14 @@ public class AgregarProductoDlg extends javax.swing.JDialog {
             String codigo = (String) productoTabla.getModel().getValueAt(productoTabla.getSelectedRow(), 0);
             producto = control.obtenerProductoPorCodigo(codigo);
             cantidad = (Integer) cantidadSpinner.getValue();
+            costo = Float.valueOf(costoTxt.getText());
 
             this.setVisible(false);
         } catch (NegocioException ex) {
-            Logger.getLogger(AgregarProductoDlg.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AgregarProductoCompraDlg.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (ArrayIndexOutOfBoundsException ex) {
-            Logger.getLogger(AgregarProductoDlg.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AgregarProductoCompraDlg.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, "Seleccione un producto antes de continuar", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_agregarBtnActionPerformed
@@ -211,14 +219,16 @@ public class AgregarProductoDlg extends javax.swing.JDialog {
     }//GEN-LAST:event_cantidadSpinnerKeyTyped
 
     private void cantidadSpinnerKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cantidadSpinnerKeyPressed
-       
+
     }//GEN-LAST:event_cantidadSpinnerKeyPressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton agregarBtn;
     private javax.swing.JButton cancelarBtn;
     private javax.swing.JSpinner cantidadSpinner;
+    private javax.swing.JTextField costoTxt;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable productoTabla;
     // End of variables declaration//GEN-END:variables

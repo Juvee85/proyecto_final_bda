@@ -3,40 +3,40 @@
  */
 package forms;
 
-import dtos.VentaDTO;
+import dtos.CompraDTO;
 import excepciones.NegocioException;
-import interfaces.IControlVentasBO;
+import interfaces.IControlComprasBO;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import negocio.ControlVentasBO;
+import negocio.ControlComprasBO;
 
 /**
  *
  * @author Juventino López García - 00000248547
  */
-public class BuscarVentasDlg extends javax.swing.JDialog {
+public class BuscarComprasDlg extends javax.swing.JDialog {
 
-    IControlVentasBO control = new ControlVentasBO();
-    private List<VentaDTO> ventas;
+    IControlComprasBO control = new ControlComprasBO();
+    private List<CompraDTO> compras;
 
     /**
      * Creates new form BuscarVentasDlg
      */
-    public BuscarVentasDlg(java.awt.Frame parent, boolean modal, List<VentaDTO> ventas) {
+    public BuscarComprasDlg(java.awt.Frame parent, boolean modal, List<CompraDTO> compras) {
         super(parent, modal);
         initComponents();
-        this.ventas = ventas;
+        this.compras = compras;
         llenarTablaProductos();
     }
 
     private void llenarTablaProductos() {
         
-            List<VentaDTO> listaProductos = ventas;
-            DefaultTableModel modeloTabla = (DefaultTableModel) ventasTabla.getModel();
+            List<CompraDTO> listaProductos = compras;
+            DefaultTableModel modeloTabla = (DefaultTableModel) comprasTbl.getModel();
 
             if (modeloTabla.getRowCount() > 0) {
                 for (int i = modeloTabla.getRowCount() - 1; i > -1; i--) {
@@ -46,13 +46,12 @@ public class BuscarVentasDlg extends javax.swing.JDialog {
 
             if (listaProductos != null) {
                 listaProductos.forEach(row -> {
-                    Object[] fila = new Object[5];
+                    Object[] fila = new Object[4];
                     fila[0] = row.getFolio();
-                    fila[1] = row.getNombreCliente() + " " + row.getApellidoCliente();
-                    fila[2] = row.getMetodoPago();
-                    fila[3] = row.getMontoTotal();
+                    fila[1] = row.getNombreProveedor();
+                    fila[2] = row.getMontoTotal();
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                    fila[4] = row.getFecha().format(formatter);
+                    fila[3] = row.getFecha().format(formatter);
 
                     modeloTabla.addRow(fila);
                 });
@@ -69,23 +68,37 @@ public class BuscarVentasDlg extends javax.swing.JDialog {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        ventasTabla = new javax.swing.JTable();
+        comprasTbl = new javax.swing.JTable();
         detallesBtn = new javax.swing.JButton();
         salirBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
 
-        ventasTabla.setModel(new javax.swing.table.DefaultTableModel(
+        comprasTbl.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Folio", "Nombre cliente", "Metodo Pago", "Monto Total", "Fecha"
+                "Folio", "Nombre Proveedor", "Monto Total", "Fecha"
             }
-        ));
-        ventasTabla.getTableHeader().setReorderingAllowed(false);
-        jScrollPane1.setViewportView(ventasTabla);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        comprasTbl.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(comprasTbl);
+        if (comprasTbl.getColumnModel().getColumnCount() > 0) {
+            comprasTbl.getColumnModel().getColumn(0).setResizable(false);
+            comprasTbl.getColumnModel().getColumn(1).setResizable(false);
+            comprasTbl.getColumnModel().getColumn(2).setResizable(false);
+            comprasTbl.getColumnModel().getColumn(3).setResizable(false);
+        }
 
         detallesBtn.setText("Ver detalles");
         detallesBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -137,9 +150,9 @@ public class BuscarVentasDlg extends javax.swing.JDialog {
 
     private void detallesBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_detallesBtnActionPerformed
         try {
-            String folio = (String) ventasTabla.getModel().getValueAt(ventasTabla.getSelectedRow(), 0);
-            VentaDTO venta = control.obtenerVentaPorFolio(folio);
-            new InformacionVentaDlg(null, false, venta).setVisible(true);
+            String folio = (String) comprasTbl.getModel().getValueAt(comprasTbl.getSelectedRow(), 0);
+            CompraDTO compra = control.obtenerCompraPorFolio(folio);
+            new InformacionCompraDlg(null, false, compra).setVisible(true);
         } catch (NegocioException ex) {
             Logger.getLogger(AgregarProductoDlg.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -150,9 +163,9 @@ public class BuscarVentasDlg extends javax.swing.JDialog {
     }//GEN-LAST:event_detallesBtnActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable comprasTbl;
     private javax.swing.JButton detallesBtn;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton salirBtn;
-    private javax.swing.JTable ventasTabla;
     // End of variables declaration//GEN-END:variables
 }

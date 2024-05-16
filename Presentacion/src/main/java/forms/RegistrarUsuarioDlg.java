@@ -4,6 +4,7 @@
 package forms;
 
 import dtos.UsuarioDTO;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
 import pojos.Puesto;
@@ -78,6 +79,12 @@ public class RegistrarUsuarioDlg extends javax.swing.JDialog {
         jLabel4.setText("Apellido Materno:");
 
         jLabel5.setText("Teléfono:");
+
+        telefonoTxt.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                telefonoTxtKeyTyped(evt);
+            }
+        });
 
         jLabel6.setText("Contraseña:");
 
@@ -187,6 +194,7 @@ public class RegistrarUsuarioDlg extends javax.swing.JDialog {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void cancelarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarBtnActionPerformed
@@ -204,6 +212,13 @@ public class RegistrarUsuarioDlg extends javax.swing.JDialog {
 
         this.setVisible(false);
     }//GEN-LAST:event_aceptarBtnActionPerformed
+
+    private void telefonoTxtKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_telefonoTxtKeyTyped
+        char caracter = evt.getKeyChar();
+        if (!Character.isDigit(caracter) && caracter != KeyEvent.VK_BACK_SPACE && caracter != KeyEvent.VK_DELETE && caracter != KeyEvent.VK_ENTER) {
+            evt.consume();
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_telefonoTxtKeyTyped
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton aceptarBtn;

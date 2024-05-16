@@ -6,11 +6,11 @@ package forms;
 import dtos.UsuarioDTO;
 import excepciones.NegocioException;
 import interfaces.IIniciarSesionBO;
+import java.awt.event.KeyEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import negocio.IniciarSesionBO;
-import pojos.Puesto;
 
 /**
  *
@@ -53,6 +53,11 @@ public class LoginForm extends javax.swing.JFrame {
         telefonoTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 telefonoTxtActionPerformed(evt);
+            }
+        });
+        telefonoTxt.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                telefonoTxtKeyTyped(evt);
             }
         });
 
@@ -127,19 +132,22 @@ public class LoginForm extends javax.swing.JFrame {
         iniciarSesion();
     }//GEN-LAST:event_contrasenhaPassActionPerformed
 
+    private void telefonoTxtKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_telefonoTxtKeyTyped
+        char caracter = evt.getKeyChar();
+        if (!Character.isDigit(caracter) && caracter != KeyEvent.VK_BACK_SPACE && caracter != KeyEvent.VK_DELETE && caracter != KeyEvent.VK_ENTER) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_telefonoTxtKeyTyped
+
     private void iniciarSesion() {
         IIniciarSesionBO iniciarSesionBO = new IniciarSesionBO();
 
         try {
             UsuarioDTO usuario = iniciarSesionBO.iniciarSesion(telefonoTxt.getText(), new String(contrasenhaPass.getPassword()));
             if (usuario != null) {
-                
-                if (usuario.getPuesto().equals(Puesto.GERENTE)) {
-                    new inicioGerenteForm(usuario).setVisible(true);
-                } else if (usuario.getPuesto().equals(Puesto.CAJERO)) {
-                    new inicioCajeroForm(usuario).setVisible(true);
-                }
-                
+
+                new InicioForm(usuario).setVisible(true);
+
                 this.dispose();
             }
         } catch (NegocioException ex) {

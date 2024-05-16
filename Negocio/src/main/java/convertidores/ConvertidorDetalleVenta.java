@@ -25,16 +25,15 @@ public class ConvertidorDetalleVenta extends Convertidor<DetalleVentaDTO, Detall
         DetalleVentaDTO dto = new DetalleVentaDTO();
         Producto producto = null;
         try {
-            producto = GestorProductos.getnstance().consultarProducto(detalleVenta.getProducto());
+            producto = GestorProductos.getInstance().consultarProducto(detalleVenta.getProducto());
+            dto.setCodigoProducto(producto.getCodigo());
+            dto.setNombreProducto(producto.getNombre());
+            dto.setPrecio(producto.getPrecio());
+            dto.setCantidad(detalleVenta.getCantidad());
+            dto.setTotal(detalleVenta.getTotal());
         } catch (PersistenciaException ex) {
             Logger.getLogger(ConvertidorDetalleVenta.class.getName()).log(Level.SEVERE, null, ex);
         }
-        dto.setCodigoProducto(producto.getCodigo());
-        dto.setNombreProducto(producto.getNombre());
-        dto.setPrecio(producto.getPrecio());
-        dto.setCantidad(detalleVenta.getCantidad());
-        dto.setTotal(detalleVenta.getTotal());
-        
 
         return dto;
     }
@@ -44,7 +43,7 @@ public class ConvertidorDetalleVenta extends Convertidor<DetalleVentaDTO, Detall
         detalleVenta.setCantidad(dto.getCantidad());
         detalleVenta.setTotal(dto.getTotal());
         try {
-            detalleVenta.setProducto(GestorProductos.getnstance().consultarProducto(dto.getCodigoProducto()).getId());
+            detalleVenta.setProducto(GestorProductos.getInstance().consultarProducto(dto.getCodigoProducto()).getId());
         } catch (PersistenciaException ex) {
             Logger.getLogger(ConvertidorDetalleVenta.class.getName()).log(Level.SEVERE, null, ex);
         }

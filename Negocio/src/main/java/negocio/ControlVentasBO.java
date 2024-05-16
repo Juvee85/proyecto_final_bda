@@ -4,18 +4,21 @@
 package negocio;
 
 import convertidores.ConvertidorVenta;
+import daos.GestorProductos;
 import daos.GestorVentas;
 import dtos.DetalleVentaDTO;
 import dtos.VentaDTO;
 import excepciones.NegocioException;
 import excepciones.PersistenciaException;
 import interfaces.IControlVentasBO;
+import interfaces.IGestorProductos;
 import interfaces.IGestorVentas;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import pojos.Producto;
 import pojos.Venta;
 import utilidades.GeneradorFolio;
 
@@ -26,12 +29,18 @@ import utilidades.GeneradorFolio;
 public class ControlVentasBO implements IControlVentasBO {
 
     private final IGestorVentas GESTOR_VENTAS = GestorVentas.getInstance();
+    private final IGestorProductos GESTOR_PRODUCTOS = GestorProductos.getInstance();
 
     @Override
     public void registrarVenta(VentaDTO venta) throws NegocioException {
         try {
-            Float montoTotal = 0f;
+            float montoTotal = 0f;
             for (DetalleVentaDTO detalle : venta.getDetalles()) {
+                Producto producto = GESTOR_PRODUCTOS.consultarProducto(detalle.getCodigoProducto());
+                
+                if (producto.getStock()-detalle.getCantidad() < 0)
+                    throw new NegocioException("No cuenta con suficiente stock para terminar la venta");
+                
                 montoTotal += detalle.getTotal();
             }
             venta.setMontoTotal(montoTotal);

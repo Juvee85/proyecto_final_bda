@@ -94,14 +94,14 @@ public interface IGestorProductos {
      * @param cantidad Cantidad del producto a registrar.
      * @throws PersistenciaException en caso de error.
      */
-    public void registrarExistenciaProducto(Producto producto, int cantidad) throws PersistenciaException;
+    public void registrarExistenciaProducto(ObjectId producto, int cantidad) throws PersistenciaException;
 
     /**
      * Elimina todo registro y existencia del producto en el inventario de
      * productos.
      *
-     * @param producto Producto a eliminar.
+     * @param codigoProducto
      * @throws PersistenciaException subsistemas.excepciones.DAOException
      */
-    public void eliminarInventarioProducto(Producto producto) throws PersistenciaException;
+    public void eliminarInventarioProducto(String codigoProducto) throws PersistenciaException;
 }

@@ -4,11 +4,14 @@
 package daos;
 
 import com.mongodb.DuplicateKeyException;
+import com.mongodb.MongoException;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
+import static com.mongodb.client.model.Updates.inc;
+import static com.mongodb.client.model.Updates.set;
 import conexion.ConexionBD;
 import excepciones.PersistenciaException;
 import interfaces.IGestorProductos;
@@ -33,11 +36,10 @@ public class GestorProductos implements IGestorProductos {
             IndexOptions indexOptions = new IndexOptions().unique(true);
             COLECCION_PRODUCTOS.createIndex(Indexes.descending("codigo"), indexOptions);
         } catch (DuplicateKeyException e) {
-            System.out.printf("duplicate field values encountered, couldn't create index: \t%s\n", e);
         }
     }
 
-    public static GestorProductos getnstance() {
+    public static GestorProductos getInstance() {
         if (instance == null) {
             instance = new GestorProductos();
         }
@@ -57,7 +59,12 @@ public class GestorProductos implements IGestorProductos {
 
     @Override
     public List<Producto> consultarProductosPorNombre(String nombreProducto) throws PersistenciaException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        FindIterable<Producto> resultado = COLECCION_PRODUCTOS.find(eq("nombre", nombreProducto));
+        ArrayList<Producto> productos = new ArrayList<>();
+        for (Producto producto : resultado) {
+            productos.add(producto);
+        }
+        return productos;
     }
 
     @Override
@@ -67,7 +74,11 @@ public class GestorProductos implements IGestorProductos {
 
     @Override
     public void registrarProducto(Producto producto) throws PersistenciaException {
-        COLECCION_PRODUCTOS.insertOne(producto);
+        try {
+             COLECCION_PRODUCTOS.insertOne(producto);
+        } catch (MongoException e) {
+            throw new PersistenciaException("Ya existe un producto registrado con este código, intente de nuevo con otro código");
+        }
     }
 
     @Override
@@ -89,17 +100,17 @@ public class GestorProductos implements IGestorProductos {
 
     @Override
     public void eliminarProducto(String codigoProducto) throws PersistenciaException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        COLECCION_PRODUCTOS.updateOne(eq("codigo", codigoProducto), set("eliminado", true));
     }
 
     @Override
-    public void registrarExistenciaProducto(Producto producto, int cantidad) throws PersistenciaException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void registrarExistenciaProducto(ObjectId producto, int cantidad) throws PersistenciaException {
+        COLECCION_PRODUCTOS.updateOne(eq("_id", producto), inc("stock", cantidad));
     }
 
     @Override
-    public void eliminarInventarioProducto(Producto producto) throws PersistenciaException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void eliminarInventarioProducto(String codigoProducto) throws PersistenciaException {
+        COLECCION_PRODUCTOS.deleteOne(eq("codigo", codigoProducto));
     }
 
 }

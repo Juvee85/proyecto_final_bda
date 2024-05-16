@@ -1,5 +1,5 @@
 /*
- * inicioGerenteForm.java
+ * InicioForm.java
  */
 package forms;
 
@@ -9,6 +9,7 @@ import dtos.UsuarioDTO;
 import dtos.UsuarioVentaDTO;
 import dtos.VentaDTO;
 import excepciones.NegocioException;
+import interfaces.IControlComprasBO;
 import interfaces.IControlUsuarioBO;
 import interfaces.IControlVentasBO;
 import java.awt.event.ActionListener;
@@ -19,9 +20,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import negocio.ControlComprasBO;
 import negocio.ControlUsuarioBO;
 import negocio.ControlVentasBO;
 import pojos.MetodoPago;
+import pojos.Puesto;
 import utilidades.JButtonCellEditor;
 import utilidades.JButtonRenderer;
 
@@ -29,11 +32,13 @@ import utilidades.JButtonRenderer;
  *
  * @author Juventino López García
  */
-public class inicioGerenteForm extends javax.swing.JFrame {
+public class InicioForm extends javax.swing.JFrame {
 
     private IControlVentasBO controlVentas = new ControlVentasBO();
     private IControlUsuarioBO controlUsuarios = new ControlUsuarioBO();
-    
+    private IControlComprasBO controlCompras = new ControlComprasBO();
+    private float total;
+
     private UsuarioDTO usuario;
     private List<DetalleVentaDTO> detallesVenta;
 
@@ -42,12 +47,13 @@ public class inicioGerenteForm extends javax.swing.JFrame {
      *
      * @param usuario
      */
-    public inicioGerenteForm(UsuarioDTO usuario) {
+    public InicioForm(UsuarioDTO usuario) {
         initComponents();
         this.usuario = usuario;
         detallesVenta = new ArrayList<>();
-        detallesVenta.add(new DetalleVentaDTO("test", "test", 34f, 5));
 
+        if (usuario.getPuesto().equals(Puesto.CAJERO))
+            inicioCajero();
         ActionListener onEditarClickListener = (java.awt.event.ActionEvent e) -> {
             eliminarDetalle();
             this.ventaTabla.clearSelection();
@@ -59,6 +65,12 @@ public class inicioGerenteForm extends javax.swing.JFrame {
         llenarTablaVenta();
     }
 
+    private void inicioCajero() {
+        jMenuBar1.remove(usuariosMenu);
+        jMenuBar1.remove(comprasMenu);
+        productosMenu.remove(resgistrarProductoMenuItem);
+    }
+    
     private void llenarTablaVenta() {
         DefaultTableModel modeloTabla = (DefaultTableModel) ventaTabla.getModel();
         if (modeloTabla.getRowCount() > 0) {
@@ -73,12 +85,12 @@ public class inicioGerenteForm extends javax.swing.JFrame {
                 fila[1] = row.getNombreProducto();
                 fila[2] = row.getPrecio();
                 fila[3] = row.getCantidad();
+                row.setTotal(row.getCantidad() * row.getPrecio());
                 fila[4] = row.getTotal();
 
                 modeloTabla.addRow(fila);
             });
         }
-        ventaTabla.repaint();
     }
 
     private void agregarDetalleTabla() {
@@ -89,31 +101,50 @@ public class inicioGerenteForm extends javax.swing.JFrame {
         Integer cantidad = dlg.getCantidad();
         if (producto != null) {
             dlg.dispose();
-            DetalleVentaDTO detalleVentaDTO = new DetalleVentaDTO(producto.getCodigo(), producto.getNombre(), producto.getPrecio(), cantidad);
-            detallesVenta.add(detalleVentaDTO);
+            if (detallesVenta.stream().anyMatch((d) -> d.getCodigoProducto().equals(producto.getCodigo()))) {
+                for (DetalleVentaDTO detalleVentaDTO : detallesVenta) {
+                    if (detalleVentaDTO.getCodigoProducto().equals(producto.getCodigo())) {
+                        detalleVentaDTO.setCantidad(detalleVentaDTO.getCantidad() + cantidad);
+                    }
+                }
+
+            } else {
+                DetalleVentaDTO detalleVentaDTO = new DetalleVentaDTO(producto.getCodigo(), producto.getNombre(), producto.getPrecio(), cantidad);
+                detallesVenta.add(detalleVentaDTO);
+            }
+
             llenarTablaVenta();
+            calcularTotal();
         }
     }
 
     private void eliminarDetalle() {
-
         String codigo = (String) ventaTabla.getModel().getValueAt(ventaTabla.getSelectedRow(), 0);
         detallesVenta.removeIf((detalle) -> detalle.getCodigoProducto().equals(codigo));
         int indiceFila = ventaTabla.getSelectedRow();
         ventaTabla.clearSelection();
         ventaTabla.setRowSelectionInterval(indiceFila, indiceFila);
-        
+
         llenarTablaVenta();
+        calcularTotal();
     }
-    
+
     private UsuarioVentaDTO detallesUsuarioVenta() {
         UsuarioVentaDTO usuarioVentaDTO = new UsuarioVentaDTO();
         usuarioVentaDTO.setRfc(usuario.getRfc());
         usuarioVentaDTO.setNombre(usuario.getNombre());
         usuarioVentaDTO.setApellidoPaterno(usuario.getApellidoPaterno());
         usuarioVentaDTO.setApellidoMaterno(usuario.getApellidoMaterno());
-        
+
         return usuarioVentaDTO;
+    }
+
+    private void calcularTotal() {
+        total = 0;
+        for (DetalleVentaDTO detalleVentaDTO : detallesVenta) {
+            total += detalleVentaDTO.getTotal();
+        }
+        totalLbl.setText(String.valueOf(total));
     }
 
     /**
@@ -146,8 +177,6 @@ public class inicioGerenteForm extends javax.swing.JFrame {
         usuariosMenu = new javax.swing.JMenu();
         buscarUsuarioMenuItem = new javax.swing.JMenuItem();
         registrarUsuarioMenuItem = new javax.swing.JMenuItem();
-        ayudaMenu = new javax.swing.JMenu();
-        acercaDeMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -239,9 +268,19 @@ public class inicioGerenteForm extends javax.swing.JFrame {
         comprasMenu.setText("Compras");
 
         buscarCompraMenuItem.setText("Buscar");
+        buscarCompraMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buscarCompraMenuItemActionPerformed(evt);
+            }
+        });
         comprasMenu.add(buscarCompraMenuItem);
 
         registrarCompraMenuItem.setText("Registrar");
+        registrarCompraMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                registrarCompraMenuItemActionPerformed(evt);
+            }
+        });
         comprasMenu.add(registrarCompraMenuItem);
 
         jMenuBar1.add(comprasMenu);
@@ -285,13 +324,6 @@ public class inicioGerenteForm extends javax.swing.JFrame {
         usuariosMenu.add(registrarUsuarioMenuItem);
 
         jMenuBar1.add(usuariosMenu);
-
-        ayudaMenu.setText("Ayuda");
-
-        acercaDeMenuItem.setText("Acerca de");
-        ayudaMenu.add(acercaDeMenuItem);
-
-        jMenuBar1.add(ayudaMenu);
 
         setJMenuBar(jMenuBar1);
 
@@ -343,11 +375,11 @@ public class inicioGerenteForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buscarProductosMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarProductosMenuItemActionPerformed
-        // TODO add your handling code here:
+        new BuscarProductoDlg(this, false).setVisible(true);
     }//GEN-LAST:event_buscarProductosMenuItemActionPerformed
 
     private void resgistrarProductoMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resgistrarProductoMenuItemActionPerformed
-        // TODO add your handling code here:
+        new RegistrarProductoDlg(this, false).setVisible(true);
     }//GEN-LAST:event_resgistrarProductoMenuItemActionPerformed
 
     private void agregarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarBtnActionPerformed
@@ -358,6 +390,7 @@ public class inicioGerenteForm extends javax.swing.JFrame {
         if (!detallesVenta.isEmpty()) {
             detallesVenta.clear();
             llenarTablaVenta();
+            calcularTotal();
         } else {
             JOptionPane.showMessageDialog(this, "La venta no tiene ningun elemento aún", "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -367,14 +400,13 @@ public class inicioGerenteForm extends javax.swing.JFrame {
         try {
             new BuscarVentasDlg(this, false, controlVentas.obtenerVentasDia()).setVisible(true);
         } catch (NegocioException ex) {
-            Logger.getLogger(inicioGerenteForm.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(InicioForm.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_ventasDiaMenuItemActionPerformed
 
     private void finalizarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_finalizarBtnActionPerformed
-
         if (!detallesVenta.isEmpty()) {
-            ConfirmarVentaDlg dlg = new ConfirmarVentaDlg(this, false, 200f);
+            ConfirmarVentaDlg dlg = new ConfirmarVentaDlg(this, false, total);
             dlg.setVisible(true);
 
             String nombreCliente = dlg.getNombreCliente();
@@ -383,29 +415,28 @@ public class inicioGerenteForm extends javax.swing.JFrame {
 
             if (nombreCliente != null) {
                 dlg.dispose();
-                VentaDTO ventaDTO = new VentaDTO(nombreCliente, apellidoCliente, metodo, 
+                VentaDTO ventaDTO = new VentaDTO(nombreCliente, apellidoCliente, metodo,
                         LocalDateTime.now(), detallesUsuarioVenta(), detallesVenta);
                 try {
                     controlVentas.registrarVenta(ventaDTO);
                 } catch (NegocioException ex) {
-                    Logger.getLogger(inicioGerenteForm.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(InicioForm.class.getName()).log(Level.SEVERE, null, ex);
                     JOptionPane.showMessageDialog(this, ex.getMessage());
                 }
                 detallesVenta.clear();
                 llenarTablaVenta();
+                calcularTotal();
             }
         } else {
             JOptionPane.showMessageDialog(this, "La venta no tiene ningun elemento aún", "Error", JOptionPane.ERROR_MESSAGE);
         }
-
-
     }//GEN-LAST:event_finalizarBtnActionPerformed
 
     private void buscarVentasMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarVentasMenuItemActionPerformed
         try {
             new BuscarVentasDlg(this, false, controlVentas.obtenerVentas()).setVisible(true);
         } catch (NegocioException ex) {
-            Logger.getLogger(inicioGerenteForm.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(InicioForm.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_buscarVentasMenuItemActionPerformed
 
@@ -413,37 +444,46 @@ public class inicioGerenteForm extends javax.swing.JFrame {
         try {
             new BuscarUsuariosDlg(this, false, controlUsuarios.obtenerUsuarios()).setVisible(true);
         } catch (NegocioException ex) {
-            Logger.getLogger(inicioGerenteForm.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(InicioForm.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_buscarUsuarioMenuItemActionPerformed
 
     private void registrarUsuarioMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registrarUsuarioMenuItemActionPerformed
         RegistrarUsuarioDlg dlg = new RegistrarUsuarioDlg(this, false);
         dlg.setVisible(true);
-        
         UsuarioDTO usuarioDTO = dlg.getUsuario();
-        
+
         if (usuarioDTO != null) {
-                dlg.dispose();
-                
-                DireccionUsuarioDlg direccionDlg = new DireccionUsuarioDlg(this, false);
-                direccionDlg.setVisible(true);
-                usuarioDTO.setDireccion(direccionDlg.getDireccion());
-                try {
-                    direccionDlg.dispose();
-                    controlUsuarios.registrarUsuario(usuarioDTO);
-                } catch (NegocioException ex) {
-                    Logger.getLogger(inicioGerenteForm.class.getName()).log(Level.SEVERE, null, ex);
-                    JOptionPane.showMessageDialog(this, ex.getMessage());
-                }
+            dlg.dispose();
+
+            DireccionUsuarioDlg direccionDlg = new DireccionUsuarioDlg(this, false);
+            direccionDlg.setVisible(true);
+            usuarioDTO.setDireccion(direccionDlg.getDireccion());
+            try {
+                direccionDlg.dispose();
+                controlUsuarios.registrarUsuario(usuarioDTO);
+            } catch (NegocioException ex) {
+                Logger.getLogger(InicioForm.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(this, ex.getMessage());
             }
+        }
     }//GEN-LAST:event_registrarUsuarioMenuItemActionPerformed
 
+    private void registrarCompraMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registrarCompraMenuItemActionPerformed
+        new RegistrarCompraDlg(this, false).setVisible(true);
+    }//GEN-LAST:event_registrarCompraMenuItemActionPerformed
+
+    private void buscarCompraMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarCompraMenuItemActionPerformed
+        try {
+            new BuscarComprasDlg(this, false, controlCompras.obtenerCompras()).setVisible(true);
+        } catch (NegocioException ex) {
+            Logger.getLogger(InicioForm.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+    }//GEN-LAST:event_buscarCompraMenuItemActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem acercaDeMenuItem;
     private javax.swing.JButton agregarBtn;
-    private javax.swing.JMenu ayudaMenu;
     private javax.swing.JMenuItem buscarCompraMenuItem;
     private javax.swing.JMenuItem buscarProductosMenuItem;
     private javax.swing.JMenuItem buscarUsuarioMenuItem;
