@@ -5,7 +5,10 @@ package forms;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 import pojos.MetodoPago;
 
 /**
@@ -260,11 +263,9 @@ public class ConfirmarVentaDlg extends javax.swing.JDialog {
 
     private void cantidadPagoTxtKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cantidadPagoTxtKeyTyped
         char caracter = evt.getKeyChar();
-        if (!Character.isDigit(caracter) && caracter != KeyEvent.VK_BACK_SPACE && caracter != KeyEvent.VK_DELETE && caracter != KeyEvent.VK_ENTER) {
+        if (!Character.isDigit(caracter) && caracter != KeyEvent.VK_BACK_SPACE && caracter != KeyEvent.VK_DELETE && caracter != KeyEvent.VK_ENTER && caracter != KeyEvent.VK_PERIOD) {
             evt.consume();
         }
-
-
     }//GEN-LAST:event_cantidadPagoTxtKeyTyped
 
     private void cantidadPagoTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cantidadPagoTxtActionPerformed
@@ -280,7 +281,13 @@ public class ConfirmarVentaDlg extends javax.swing.JDialog {
     }//GEN-LAST:event_cantidadPagoTxtInputMethodTextChanged
 
     private void calcularBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calcularBtnActionPerformed
-        cambioLbl.setText(String.valueOf(calcularCambio(Float.parseFloat(cantidadPagoTxt.getText()))));
+        try {
+            cambioLbl.setText(String.valueOf(calcularCambio(Float.parseFloat(cantidadPagoTxt.getText()))));
+        } catch (NumberFormatException ex) {
+            Logger.getLogger(AgregarProductoCompraDlg.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Asegurese de ingresar una cantidad valida", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
     }//GEN-LAST:event_calcularBtnActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

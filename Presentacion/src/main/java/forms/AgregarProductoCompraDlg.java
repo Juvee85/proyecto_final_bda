@@ -6,6 +6,7 @@ package forms;
 import dtos.ProductoDTO;
 import excepciones.NegocioException;
 import interfaces.IControlProductoBO;
+import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -149,6 +150,11 @@ public class AgregarProductoCompraDlg extends javax.swing.JDialog {
         jLabel2.setText("Costo:");
 
         costoTxt.setText("0");
+        costoTxt.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                costoTxtKeyTyped(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -211,6 +217,9 @@ public class AgregarProductoCompraDlg extends javax.swing.JDialog {
         } catch (ArrayIndexOutOfBoundsException ex) {
             Logger.getLogger(AgregarProductoCompraDlg.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, "Seleccione un producto antes de continuar", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (NumberFormatException ex) {
+            Logger.getLogger(AgregarProductoCompraDlg.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Asegurese de ingresar una cantidad valida", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_agregarBtnActionPerformed
 
@@ -221,6 +230,13 @@ public class AgregarProductoCompraDlg extends javax.swing.JDialog {
     private void cantidadSpinnerKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cantidadSpinnerKeyPressed
 
     }//GEN-LAST:event_cantidadSpinnerKeyPressed
+
+    private void costoTxtKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_costoTxtKeyTyped
+        char caracter = evt.getKeyChar();
+        if (!Character.isDigit(caracter) && caracter != KeyEvent.VK_BACK_SPACE && caracter != KeyEvent.VK_DELETE && caracter != KeyEvent.VK_ENTER && caracter != KeyEvent.VK_PERIOD) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_costoTxtKeyTyped
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton agregarBtn;

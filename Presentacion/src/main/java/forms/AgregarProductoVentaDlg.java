@@ -1,5 +1,5 @@
 /*
- * AgregarProductoDlg.java
+ * AgregarProductoVentaDlg.java
  */
 package forms;
 
@@ -17,7 +17,7 @@ import negocio.ControlProductosBO;
  *
  * @author Juventino López García - 00000248547
  */
-public class AgregarProductoDlg extends javax.swing.JDialog {
+public class AgregarProductoVentaDlg extends javax.swing.JDialog {
 
     private IControlProductoBO control = new ControlProductosBO();
     private ProductoDTO producto;
@@ -26,7 +26,7 @@ public class AgregarProductoDlg extends javax.swing.JDialog {
     /**
      * Creates new form AgregarProductoDlg
      */
-    public AgregarProductoDlg(java.awt.Frame parent, boolean modal) {
+    public AgregarProductoVentaDlg(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         llenarTablaProductos();
@@ -34,7 +34,7 @@ public class AgregarProductoDlg extends javax.swing.JDialog {
 
     private void llenarTablaProductos() {
         try {
-            List<ProductoDTO> listaProductos = control.obtenerProductos();
+            List<ProductoDTO> listaProductos = control.obtenerProductosConStock();
             DefaultTableModel modeloTabla = (DefaultTableModel) productoTabla.getModel();
 
             if (modeloTabla.getRowCount() > 0) {
@@ -54,7 +54,7 @@ public class AgregarProductoDlg extends javax.swing.JDialog {
                 });
             }
         } catch (NegocioException ex) {
-            Logger.getLogger(AgregarProductoDlg.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AgregarProductoVentaDlg.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -198,10 +198,10 @@ public class AgregarProductoDlg extends javax.swing.JDialog {
 
             this.setVisible(false);
         } catch (NegocioException ex) {
-            Logger.getLogger(AgregarProductoDlg.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AgregarProductoVentaDlg.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (ArrayIndexOutOfBoundsException ex) {
-            Logger.getLogger(AgregarProductoDlg.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AgregarProductoVentaDlg.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, "Seleccione un producto antes de continuar", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_agregarBtnActionPerformed

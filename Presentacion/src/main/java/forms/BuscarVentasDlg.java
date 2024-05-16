@@ -141,10 +141,10 @@ public class BuscarVentasDlg extends javax.swing.JDialog {
             VentaDTO venta = control.obtenerVentaPorFolio(folio);
             new InformacionVentaDlg(null, false, venta).setVisible(true);
         } catch (NegocioException ex) {
-            Logger.getLogger(AgregarProductoDlg.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AgregarProductoVentaDlg.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (ArrayIndexOutOfBoundsException ex) {
-            Logger.getLogger(AgregarProductoDlg.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AgregarProductoVentaDlg.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, "Seleccione una venta antes de continuar", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_detallesBtnActionPerformed

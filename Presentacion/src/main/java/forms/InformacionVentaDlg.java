@@ -39,7 +39,6 @@ public class InformacionVentaDlg extends javax.swing.JDialog {
     }
 
     private void llenarTablaDetalles() {
-
         List<DetalleVentaDTO> listaProductos = venta.getDetalles();
         DefaultTableModel modeloTabla = (DefaultTableModel) detalleTabla.getModel();
 
@@ -123,7 +122,7 @@ public class InformacionVentaDlg extends javax.swing.JDialog {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, true, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -132,6 +131,10 @@ public class InformacionVentaDlg extends javax.swing.JDialog {
         });
         detalleTabla.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(detalleTabla);
+        if (detalleTabla.getColumnModel().getColumnCount() > 0) {
+            detalleTabla.getColumnModel().getColumn(0).setResizable(false);
+            detalleTabla.getColumnModel().getColumn(2).setResizable(false);
+        }
 
         cerrarBtn.setText("Cerrar");
         cerrarBtn.addActionListener(new java.awt.event.ActionListener() {

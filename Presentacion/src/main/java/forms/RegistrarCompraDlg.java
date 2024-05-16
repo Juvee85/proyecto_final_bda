@@ -26,6 +26,7 @@ public class RegistrarCompraDlg extends javax.swing.JDialog {
     IControlComprasBO control = new ControlComprasBO();
     private List<DetalleCompraDTO> detallesCompra;
     private float total;
+
     /**
      * Creates new form RegistrarCompraDlg
      */
@@ -55,7 +56,7 @@ public class RegistrarCompraDlg extends javax.swing.JDialog {
             });
         }
     }
-    
+
     private void calcularTotal() {
         total = 0;
         for (DetalleCompraDTO detalleCompraDTO : detallesCompra) {
@@ -63,6 +64,7 @@ public class RegistrarCompraDlg extends javax.swing.JDialog {
         }
         totalLbl.setText(String.valueOf(total));
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -235,21 +237,19 @@ public class RegistrarCompraDlg extends javax.swing.JDialog {
 
     private void finalizarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_finalizarBtnActionPerformed
         if (!detallesCompra.isEmpty()) {
-                CompraDTO compraDTO = new CompraDTO();
-                compraDTO.setDetalles(detallesCompra);
-                compraDTO.setFecha(LocalDateTime.now());
-                compraDTO.setNombreProveedor(nombreProveedorTxt.getText());
-                try {
-                    control.registrarCompra(compraDTO);
-                } catch (NegocioException ex) {
-                    Logger.getLogger(InicioForm.class.getName()).log(Level.SEVERE, null, ex);
-                    JOptionPane.showMessageDialog(this, ex.getMessage());
-                }
-                detallesCompra.clear();
-                llenarTablaVenta();
-                calcularTotal();
-            
-                this.dispose();
+            CompraDTO compraDTO = new CompraDTO();
+            compraDTO.setDetalles(detallesCompra);
+            compraDTO.setFecha(LocalDateTime.now());
+            compraDTO.setNombreProveedor(nombreProveedorTxt.getText());
+            try {
+                control.registrarCompra(compraDTO);
+            } catch (NegocioException ex) {
+                Logger.getLogger(InicioForm.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(this, ex.getMessage());
+            }
+            JOptionPane.showMessageDialog(null, "Se registro la compra exitosamente", "Producto registrado", JOptionPane.INFORMATION_MESSAGE);
+
+            this.dispose();
         } else {
             JOptionPane.showMessageDialog(this, "La compra no tiene ningun elemento aún", "Error", JOptionPane.ERROR_MESSAGE);
         }

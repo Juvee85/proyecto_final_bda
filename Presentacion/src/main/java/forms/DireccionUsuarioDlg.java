@@ -45,7 +45,7 @@ public class DireccionUsuarioDlg extends javax.swing.JDialog {
         ciudadTxt = new javax.swing.JTextField();
         codigoPostalTxt = new javax.swing.JTextField();
         numeroEdificioTxt = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        aceptarBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
@@ -62,10 +62,10 @@ public class DireccionUsuarioDlg extends javax.swing.JDialog {
 
         jLabel6.setText("Número de domicilio:");
 
-        jButton1.setText("Aceptar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        aceptarBtn.setText("Aceptar");
+        aceptarBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                aceptarBtnActionPerformed(evt);
             }
         });
 
@@ -98,7 +98,7 @@ public class DireccionUsuarioDlg extends javax.swing.JDialog {
                         .addComponent(calleTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addComponent(aceptarBtn)
                 .addGap(21, 21, 21))
         );
         layout.setVerticalGroup(
@@ -131,7 +131,7 @@ public class DireccionUsuarioDlg extends javax.swing.JDialog {
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
-                        .addComponent(jButton1)
+                        .addComponent(aceptarBtn)
                         .addGap(23, 23, 23))))
         );
 
@@ -139,7 +139,7 @@ public class DireccionUsuarioDlg extends javax.swing.JDialog {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void aceptarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aceptarBtnActionPerformed
         direccion = new DireccionDTO(calleTxt.getText(),
                 coloniaTxt.getText(),
                 ciudadTxt.getText(),
@@ -147,14 +147,14 @@ public class DireccionUsuarioDlg extends javax.swing.JDialog {
                 numeroEdificioTxt.getText());
 
         this.setVisible(false);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_aceptarBtnActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton aceptarBtn;
     private javax.swing.JTextField calleTxt;
     private javax.swing.JTextField ciudadTxt;
     private javax.swing.JTextField codigoPostalTxt;
     private javax.swing.JTextField coloniaTxt;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

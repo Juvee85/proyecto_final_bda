@@ -8,6 +8,7 @@ import com.mongodb.MongoException;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.gt;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
 import static com.mongodb.client.model.Updates.inc;
@@ -57,6 +58,16 @@ public class GestorProductos implements IGestorProductos {
         return productos;
     }
 
+    @Override
+    public List<Producto> consultarProductosConStock() throws PersistenciaException {
+        FindIterable<Producto> resultado = COLECCION_PRODUCTOS.find(gt("stock", 0));
+        ArrayList<Producto> productos = new ArrayList<>();
+        for (Producto producto : resultado) {
+            productos.add(producto);
+        }
+        return productos;
+    }
+    
     @Override
     public List<Producto> consultarProductosPorNombre(String nombreProducto) throws PersistenciaException {
         FindIterable<Producto> resultado = COLECCION_PRODUCTOS.find(eq("nombre", nombreProducto));

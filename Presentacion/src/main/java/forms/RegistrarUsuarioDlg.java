@@ -34,6 +34,7 @@ public class RegistrarUsuarioDlg extends javax.swing.JDialog {
         modelo.addAll(metodos);
         puestoComboBox.setModel(modelo);
         puestoComboBox.setSelectedIndex(0);
+        
     }
 
     public UsuarioDTO getUsuario() {
@@ -217,7 +218,7 @@ public class RegistrarUsuarioDlg extends javax.swing.JDialog {
         char caracter = evt.getKeyChar();
         if (!Character.isDigit(caracter) && caracter != KeyEvent.VK_BACK_SPACE && caracter != KeyEvent.VK_DELETE && caracter != KeyEvent.VK_ENTER) {
             evt.consume();
-        }        // TODO add your handling code here:
+        }  
     }//GEN-LAST:event_telefonoTxtKeyTyped
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

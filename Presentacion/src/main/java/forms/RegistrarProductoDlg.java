@@ -5,7 +5,7 @@ package forms;
 
 import dtos.ProductoDTO;
 import excepciones.NegocioException;
-import excepciones.PersistenciaException;
+import excepciones.PresentacionException;
 import interfaces.IControlProductoBO;
 import java.awt.event.KeyEvent;
 import java.util.logging.Level;
@@ -172,12 +172,16 @@ public class RegistrarProductoDlg extends javax.swing.JDialog {
         producto.setStockMinimo((Integer) minimoStockSpinner.getValue());
         producto.setStockExceso((Integer) maximoStockSpinner.getValue());
         try {
-            if (producto.getStockExceso() < producto.getStockMinimo()) {
-                throw new PersistenciaException("Asegurese de asignar una cantidad maxima de stock mayor que la minima");
-            }
+            if (producto.getStockExceso() < producto.getStockMinimo())
+                throw new PresentacionException("Asegurese de asignar una cantidad maxima de stock mayor que la minima");
+           
+            if (codigoTxt.getText().isEmpty() || nombreTxt.getText().isEmpty()) 
+                throw new PresentacionException("Asegurese de asignar un nombre y codigo al producto");
+            
             control.registrarProducto(producto);
+            JOptionPane.showMessageDialog(null, "Se registro el producto exitosamente", "Producto registrado", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
-        } catch (NegocioException | PersistenciaException ex) {
+        } catch (NegocioException | PresentacionException ex) {
             Logger.getLogger(RegistrarProductoDlg.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -185,9 +189,9 @@ public class RegistrarProductoDlg extends javax.swing.JDialog {
 
     private void precioTxtKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_precioTxtKeyTyped
         char caracter = evt.getKeyChar();
-        if (!Character.isDigit(caracter) && caracter != KeyEvent.VK_BACK_SPACE && caracter != KeyEvent.VK_DELETE && caracter != KeyEvent.VK_ENTER) {
+        if (!Character.isDigit(caracter) && caracter != KeyEvent.VK_BACK_SPACE && caracter != KeyEvent.VK_DELETE && caracter != KeyEvent.VK_ENTER && caracter != KeyEvent.VK_PERIOD) {
             evt.consume();
-        }        // TODO add your handling code here:
+        }
     }//GEN-LAST:event_precioTxtKeyTyped
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

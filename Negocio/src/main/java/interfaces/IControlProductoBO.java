@@ -16,6 +16,8 @@ public interface IControlProductoBO {
     public ProductoDTO obtenerProductoPorCodigo(String codigo) throws NegocioException;
 
     public List<ProductoDTO> obtenerProductos() throws NegocioException;
+    
+    public List<ProductoDTO> obtenerProductosConStock() throws NegocioException;
 
     public void registrarProducto(ProductoDTO producto) throws NegocioException;
 }

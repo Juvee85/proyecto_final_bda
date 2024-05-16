@@ -36,7 +36,7 @@ public class GestorUsuarios implements IGestorUsuarios {
         COLECCION_USUARIOS = ConexionBD.getDatabase().getCollection("usuarios", Usuario.class);
         try {
             IndexOptions indexOptions = new IndexOptions().unique(true);
-            COLECCION_USUARIOS.createIndex(Indexes.descending("telefono", "contrasenha"), indexOptions);
+            COLECCION_USUARIOS.createIndex(Indexes.descending("telefono"), indexOptions);
             COLECCION_USUARIOS.createIndex(Indexes.descending("rfc"), indexOptions);
             
         } catch (DuplicateKeyException e) {
@@ -88,7 +88,7 @@ public class GestorUsuarios implements IGestorUsuarios {
             COLECCION_USUARIOS.insertOne(usuario);
         } catch (Exception e) {
             Logger.getLogger(GestorUsuarios.class.getName()).log(Level.SEVERE, null, e);
-            throw new PersistenciaException("Ya está registrado un usuario con los datos dados, intenta Ingresar un RFC, telefono, o contraseña diferente");
+            throw new PersistenciaException("Ya está registrado un usuario con los datos dados, intenta Ingresar un RFC, o telefono diferente");
         }
     }
 

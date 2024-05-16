@@ -52,8 +52,9 @@ public class InicioForm extends javax.swing.JFrame {
         this.usuario = usuario;
         detallesVenta = new ArrayList<>();
 
-        if (usuario.getPuesto().equals(Puesto.CAJERO))
+        if (usuario.getPuesto().equals(Puesto.CAJERO)) {
             inicioCajero();
+        }
         ActionListener onEditarClickListener = (java.awt.event.ActionEvent e) -> {
             eliminarDetalle();
             this.ventaTabla.clearSelection();
@@ -70,7 +71,7 @@ public class InicioForm extends javax.swing.JFrame {
         jMenuBar1.remove(comprasMenu);
         productosMenu.remove(resgistrarProductoMenuItem);
     }
-    
+
     private void llenarTablaVenta() {
         DefaultTableModel modeloTabla = (DefaultTableModel) ventaTabla.getModel();
         if (modeloTabla.getRowCount() > 0) {
@@ -94,7 +95,7 @@ public class InicioForm extends javax.swing.JFrame {
     }
 
     private void agregarDetalleTabla() {
-        AgregarProductoDlg dlg = new AgregarProductoDlg(this, false);
+        AgregarProductoVentaDlg dlg = new AgregarProductoVentaDlg(this, false);
         dlg.setVisible(true);
 
         ProductoDTO producto = dlg.getProducto();
@@ -419,13 +420,15 @@ public class InicioForm extends javax.swing.JFrame {
                         LocalDateTime.now(), detallesUsuarioVenta(), detallesVenta);
                 try {
                     controlVentas.registrarVenta(ventaDTO);
+                    JOptionPane.showMessageDialog(null, "Se registro la venta exitosamente", "Producto registrado", JOptionPane.INFORMATION_MESSAGE);
+                    detallesVenta.clear();
+                    llenarTablaVenta();
+                    calcularTotal();
                 } catch (NegocioException ex) {
                     Logger.getLogger(InicioForm.class.getName()).log(Level.SEVERE, null, ex);
                     JOptionPane.showMessageDialog(this, ex.getMessage());
                 }
-                detallesVenta.clear();
-                llenarTablaVenta();
-                calcularTotal();
+
             }
         } else {
             JOptionPane.showMessageDialog(this, "La venta no tiene ningun elemento aún", "Error", JOptionPane.ERROR_MESSAGE);
@@ -462,6 +465,7 @@ public class InicioForm extends javax.swing.JFrame {
             try {
                 direccionDlg.dispose();
                 controlUsuarios.registrarUsuario(usuarioDTO);
+                JOptionPane.showMessageDialog(null, "Se registro el usuario exitosamente", "Producto registrado", JOptionPane.INFORMATION_MESSAGE);
             } catch (NegocioException ex) {
                 Logger.getLogger(InicioForm.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(this, ex.getMessage());

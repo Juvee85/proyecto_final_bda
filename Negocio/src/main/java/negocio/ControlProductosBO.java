@@ -28,7 +28,7 @@ public class ControlProductosBO implements IControlProductoBO {
     public ProductoDTO obtenerProductoPorCodigo(String codigo) throws NegocioException {
         try {
             Producto producto = GESTOR_PRODUCTOS.consultarProducto(codigo);
-            
+
             return new ConvertidorProducto().convertFromPojo(producto);
         } catch (PersistenciaException ex) {
             Logger.getLogger(ControlProductosBO.class.getName()).log(Level.SEVERE, null, ex);
@@ -40,6 +40,18 @@ public class ControlProductosBO implements IControlProductoBO {
     public List<ProductoDTO> obtenerProductos() throws NegocioException {
         try {
             List<Producto> consulta = GESTOR_PRODUCTOS.consultarTodos();
+
+            return new ConvertidorProducto().createFromPojos(consulta);
+        } catch (PersistenciaException ex) {
+            Logger.getLogger(ControlProductosBO.class.getName()).log(Level.SEVERE, null, ex);
+            throw new NegocioException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public List<ProductoDTO> obtenerProductosConStock() throws NegocioException {
+        try {
+            List<Producto> consulta = GESTOR_PRODUCTOS.consultarProductosConStock();
 
             return new ConvertidorProducto().createFromPojos(consulta);
         } catch (PersistenciaException ex) {
