@@ -4,7 +4,6 @@
 package pojos;
 
 import java.time.LocalDate;
-import org.bson.Document;
 import org.bson.types.ObjectId;
 
 /**
@@ -35,7 +34,6 @@ public class Usuario {
 
     private Direccion direccion;
     
-    private Boolean eliminado;
 
     public Usuario() {
 
@@ -131,28 +129,6 @@ public class Usuario {
 
     public void setDireccion(Direccion direccion) {
         this.direccion = direccion;
-    }
-
-    public Boolean getEliminado() {
-        return eliminado;
-    }
-
-    public void setEliminado(Boolean eliminado) {
-        this.eliminado = eliminado;
-    }
-
-    public Document toDocument() {
-        Document documento = new Document();
-        documento.append("rfc", rfc);
-        documento.append("nombre", nombre);
-        documento.append("apellidoPaterno", apellidoPaterno);
-        documento.append("apellidoMaterno", apellidoMaterno);
-        documento.append("contrasenha", contrasenha);
-        documento.append("puesto", puesto);
-        documento.append("telefono", telefono);
-        documento.append("fechaContratacion", fechaContratacion);
-        documento.append("direccion", direccion);
-        return documento;
     }
 
 }

@@ -30,6 +30,7 @@ public class ControlVentasBO implements IControlVentasBO {
 
     private final IGestorVentas GESTOR_VENTAS = GestorVentas.getInstance();
     private final IGestorProductos GESTOR_PRODUCTOS = GestorProductos.getInstance();
+    private final ConvertidorVenta CONVERTIDOR = new ConvertidorVenta();
 
     @Override
     public void registrarVenta(VentaDTO venta) throws NegocioException {
@@ -37,17 +38,19 @@ public class ControlVentasBO implements IControlVentasBO {
             float montoTotal = 0f;
             for (DetalleVentaDTO detalle : venta.getDetalles()) {
                 Producto producto = GESTOR_PRODUCTOS.consultarProducto(detalle.getCodigoProducto());
-                
-                if (producto.getStock()-detalle.getCantidad() < 0)
+
+                if (producto.getStock() - detalle.getCantidad() < 0) {
                     throw new NegocioException("No cuenta con suficiente stock para terminar la venta");
-                
+                }
+
                 montoTotal += detalle.getTotal();
             }
             venta.setMontoTotal(montoTotal);
             venta.setFolio("V" + GeneradorFolio.generarFolio());
-            GESTOR_VENTAS.registrarVenta(new ConvertidorVenta().convertFromDto(venta));
+            GESTOR_VENTAS.registrarVenta(CONVERTIDOR.convertFromDto(venta));
         } catch (PersistenciaException ex) {
             Logger.getLogger(ControlVentasBO.class.getName()).log(Level.SEVERE, null, ex);
+            // Falla el registro si se le asigna al azar un folio repetido, y lo vuelve a intentar
             registrarVenta(venta);
         }
     }
@@ -56,18 +59,18 @@ public class ControlVentasBO implements IControlVentasBO {
     public List<VentaDTO> obtenerVentas() throws NegocioException {
         try {
             List<Venta> consulta = GESTOR_VENTAS.consultarTodos();
-            return new ConvertidorVenta().createFromPojos(consulta);
+            return CONVERTIDOR.createFromPojos(consulta);
         } catch (PersistenciaException ex) {
             Logger.getLogger(ControlVentasBO.class.getName()).log(Level.SEVERE, null, ex);
             throw new NegocioException(ex.getMessage());
         }
     }
-    
+
     @Override
     public VentaDTO obtenerVentaPorFolio(String folio) throws NegocioException {
         try {
             Venta consulta = GESTOR_VENTAS.consultarVenta(folio);
-            return new ConvertidorVenta().convertFromPojo(consulta);
+            return CONVERTIDOR.convertFromPojo(consulta);
         } catch (PersistenciaException ex) {
             Logger.getLogger(ControlVentasBO.class.getName()).log(Level.SEVERE, null, ex);
             throw new NegocioException(ex.getMessage());
@@ -81,11 +84,11 @@ public class ControlVentasBO implements IControlVentasBO {
             int dia = hoy.getDayOfMonth();
             Month mes = hoy.getMonth();
             int anho = hoy.getYear();
-            LocalDateTime inicioHoy = LocalDateTime.of(anho, mes, dia, 0, 0);
-            LocalDateTime finalHoy= LocalDateTime.of(anho, mes, dia, 23, 59);
-            
+            LocalDateTime inicioHoy = LocalDateTime.of(anho, mes, dia, 0, 0, 0);
+            LocalDateTime finalHoy = LocalDateTime.of(anho, mes, dia, 23, 59, 59);
+
             List<Venta> consulta = GESTOR_VENTAS.consultarVentasPorPeriodo(inicioHoy, finalHoy);
-            return new ConvertidorVenta().createFromPojos(consulta);
+            return CONVERTIDOR.createFromPojos(consulta);
         } catch (PersistenciaException ex) {
             Logger.getLogger(ControlVentasBO.class.getName()).log(Level.SEVERE, null, ex);
             throw new NegocioException(ex.getMessage());

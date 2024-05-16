@@ -23,6 +23,7 @@ import utilidades.Encriptador;
 public class IniciarSesionBO implements IIniciarSesionBO {
 
     private final IGestorUsuarios gestorUsuarios = GestorUsuarios.getInstance();
+    private final ConvertidorUsuario CONVERTIDOR = new ConvertidorUsuario();
 
     @Override
     public UsuarioDTO iniciarSesion(String telefono, String contrasenha) throws NegocioException {
@@ -33,9 +34,7 @@ public class IniciarSesionBO implements IIniciarSesionBO {
                 throw new NegocioException("Las credenciales ingresadas no coinciden, intente de nuevo");
             }
 
-            ConvertidorUsuario convertidorUsuario = new ConvertidorUsuario();
-            
-            return convertidorUsuario.convertFromPojo(usuario);
+            return CONVERTIDOR.convertFromPojo(usuario);
         } catch (PersistenciaException ex) {
             Logger.getLogger(IniciarSesionBO.class.getName()).log(Level.SEVERE, null, ex);
 

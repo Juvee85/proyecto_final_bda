@@ -27,8 +27,6 @@ public class Producto {
     private Integer stockExceso;
     
     private LocalDate fechaRegistro;
-    
-    private Boolean eliminado;
 
     public Producto() {
         
@@ -96,14 +94,6 @@ public class Producto {
 
     public void setFechaRegistro(LocalDate fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
-    }
-
-    public Boolean getEliminado() {
-        return eliminado;
-    }
-
-    public void setEliminado(Boolean eliminado) {
-        this.eliminado = eliminado;
     }
     
 }

@@ -50,35 +50,45 @@ public class GestorVentas implements IGestorVentas {
 
     @Override
     public Venta consultarVenta(String folio) throws PersistenciaException {
-        FindIterable<Venta> resultado = COLECCION_VENTAS.find(eq("folio", folio));
+        try {
+            FindIterable<Venta> resultado = COLECCION_VENTAS.find(eq("folio", folio));
 
-        return resultado.first();
-    }
+            return resultado.first();
+        } catch (Exception e) {
+            throw new PersistenciaException("Error al obtener la venta");
+        }
 
-    @Override
-    public List<Venta> consultarVentasDeUsuario(Long usuarioId) throws PersistenciaException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
     public List<Venta> consultarVentasPorPeriodo(LocalDateTime inicio, LocalDateTime fin) throws PersistenciaException {
-        FindIterable<Venta> resultado = COLECCION_VENTAS.find(
-                and(gt("fecha", inicio), lt("fecha", fin)));
-        ArrayList<Venta> ventas = new ArrayList<>();
-        for (Venta venta : resultado) {
-            ventas.add(venta);
+        try {
+            FindIterable<Venta> resultado = COLECCION_VENTAS.find(
+                    and(gt("fecha", inicio), lt("fecha", fin)));
+            ArrayList<Venta> ventas = new ArrayList<>();
+            for (Venta venta : resultado) {
+                ventas.add(venta);
+            }
+
+            return ventas;
+        } catch (Exception e) {
+            throw new PersistenciaException("Error al obtener las ventas");
         }
-        return ventas;
     }
 
     @Override
     public List<Venta> consultarTodos() throws PersistenciaException {
-        FindIterable<Venta> resultado = COLECCION_VENTAS.find();
-        ArrayList<Venta> ventas = new ArrayList<>();
-        for (Venta venta : resultado) {
-            ventas.add(venta);
+        try {
+            FindIterable<Venta> resultado = COLECCION_VENTAS.find();
+            ArrayList<Venta> ventas = new ArrayList<>();
+            for (Venta venta : resultado) {
+                ventas.add(venta);
+            }
+
+            return ventas;
+        } catch (Exception e) {
+            throw new PersistenciaException("Error al obtener las ventas");
         }
-        return ventas;
     }
 
     @Override
@@ -86,24 +96,12 @@ public class GestorVentas implements IGestorVentas {
         try {
             GestorProductos gestor = GestorProductos.getInstance();
             for (DetalleVenta detalle : venta.getDetalles()) {
-                gestor.registrarExistenciaProducto(detalle.getProducto(),
-                         -detalle.getCantidad());
+                gestor.registrarCambioStock(detalle.getProducto(),
+                        -detalle.getCantidad());
             }
             COLECCION_VENTAS.insertOne(venta);
         } catch (MongoWriteException e) {
             throw new PersistenciaException("Error al registrar la venta");
         }
-
     }
-
-    @Override
-    public void actualizarVenta(Venta venta) throws PersistenciaException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void eliminarVenta(Long ventaId) throws PersistenciaException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
 }

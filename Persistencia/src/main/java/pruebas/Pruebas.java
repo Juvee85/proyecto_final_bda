@@ -27,7 +27,6 @@ public class Pruebas {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-
         insertarGerente();
         insertarProductos();
     }
@@ -49,7 +48,7 @@ public class Pruebas {
             direccion.setCiudad("Obregon");
             direccion.setColonia("Hidalgo");
             direccion.setCodigoPostal("85000");
-            direccion.setNumeroEdificio("456");
+            direccion.setNumeroEdificio("123");
 
             usuario.setDireccion(direccion);
 
@@ -68,7 +67,7 @@ public class Pruebas {
         producto.setStockExceso(24);
         producto.setStockMinimo(6);
         producto.setPrecio(45f);
-        
+
         Producto producto2 = new Producto();
 
         producto2.setCodigo("PROD2");
@@ -77,7 +76,7 @@ public class Pruebas {
         producto2.setStockExceso(30);
         producto2.setStockMinimo(8);
         producto2.setPrecio(39f);
-        
+
         Producto producto3 = new Producto();
 
         producto3.setCodigo("PROD3");
@@ -86,7 +85,7 @@ public class Pruebas {
         producto3.setStockExceso(50);
         producto3.setStockMinimo(15);
         producto3.setPrecio(15f);
-        
+
         try {
             GestorProductos.getInstance().registrarProducto(producto);
             GestorProductos.getInstance().registrarProducto(producto2);

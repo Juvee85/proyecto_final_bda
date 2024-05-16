@@ -24,6 +24,7 @@ import utilidades.GeneradorFolio;
 public class ControlComprasBO implements IControlComprasBO {
 
     private final IGestorCompras GESTOR_COMPRAS = GestorCompras.getInstance();
+    private final ConvertidorCompra CONVERTIDOR = new ConvertidorCompra();
 
     @Override
     public void registrarCompra(CompraDTO compra) throws NegocioException {
@@ -34,7 +35,7 @@ public class ControlComprasBO implements IControlComprasBO {
             }
             compra.setMontoTotal(montoTotal);
             compra.setFolio("C" + GeneradorFolio.generarFolio());
-            GESTOR_COMPRAS.registrarCompra(new ConvertidorCompra().convertFromDto(compra));
+            GESTOR_COMPRAS.registrarCompra(CONVERTIDOR.convertFromDto(compra));
         } catch (PersistenciaException ex) {
             Logger.getLogger(ControlVentasBO.class.getName()).log(Level.SEVERE, null, ex);
             throw new NegocioException(ex.getMessage());
@@ -45,7 +46,7 @@ public class ControlComprasBO implements IControlComprasBO {
     public List<CompraDTO> obtenerCompras() throws NegocioException {
         try {
             List<Compra> consulta = GESTOR_COMPRAS.consultarTodos();
-            return new ConvertidorCompra().createFromPojos(consulta);
+            return CONVERTIDOR.createFromPojos(consulta);
         } catch (PersistenciaException ex) {
             Logger.getLogger(ControlVentasBO.class.getName()).log(Level.SEVERE, null, ex);
             throw new NegocioException(ex.getMessage());
@@ -56,7 +57,7 @@ public class ControlComprasBO implements IControlComprasBO {
     public CompraDTO obtenerCompraPorFolio(String folio) throws NegocioException {
         try {
             Compra consulta = GESTOR_COMPRAS.consultarCompra(folio);
-            return new ConvertidorCompra().convertFromPojo(consulta);
+            return CONVERTIDOR.convertFromPojo(consulta);
         } catch (PersistenciaException ex) {
             Logger.getLogger(ControlVentasBO.class.getName()).log(Level.SEVERE, null, ex);
             throw new NegocioException(ex.getMessage());

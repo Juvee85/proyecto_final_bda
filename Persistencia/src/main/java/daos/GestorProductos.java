@@ -12,7 +12,6 @@ import static com.mongodb.client.model.Filters.gt;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
 import static com.mongodb.client.model.Updates.inc;
-import static com.mongodb.client.model.Updates.set;
 import conexion.ConexionBD;
 import excepciones.PersistenciaException;
 import interfaces.IGestorProductos;
@@ -20,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.bson.types.ObjectId;
 import pojos.Producto;
-import pojos.Proveedor;
 
 /**
  *
@@ -50,43 +48,50 @@ public class GestorProductos implements IGestorProductos {
 
     @Override
     public List<Producto> consultarTodos() throws PersistenciaException {
-        FindIterable<Producto> resultado = COLECCION_PRODUCTOS.find();
-        ArrayList<Producto> productos = new ArrayList<>();
-        for (Producto producto : resultado) {
-            productos.add(producto);
+        try {
+            FindIterable<Producto> resultado = COLECCION_PRODUCTOS.find();
+            ArrayList<Producto> productos = new ArrayList<>();
+            for (Producto producto : resultado) {
+                productos.add(producto);
+            }
+            return productos;
+        } catch (Exception e) {
+            throw new PersistenciaException("Ocurrio un error al obtener los productos");
         }
-        return productos;
     }
 
     @Override
     public List<Producto> consultarProductosConStock() throws PersistenciaException {
-        FindIterable<Producto> resultado = COLECCION_PRODUCTOS.find(gt("stock", 0));
-        ArrayList<Producto> productos = new ArrayList<>();
-        for (Producto producto : resultado) {
-            productos.add(producto);
+        try {
+            FindIterable<Producto> resultado = COLECCION_PRODUCTOS.find(gt("stock", 0));
+            ArrayList<Producto> productos = new ArrayList<>();
+            for (Producto producto : resultado) {
+                productos.add(producto);
+            }
+            return productos;
+        } catch (Exception e) {
+            throw new PersistenciaException("Ocurrio un error al obtener los productos");
         }
-        return productos;
-    }
-    
-    @Override
-    public List<Producto> consultarProductosPorNombre(String nombreProducto) throws PersistenciaException {
-        FindIterable<Producto> resultado = COLECCION_PRODUCTOS.find(eq("nombre", nombreProducto));
-        ArrayList<Producto> productos = new ArrayList<>();
-        for (Producto producto : resultado) {
-            productos.add(producto);
-        }
-        return productos;
     }
 
     @Override
-    public List<Producto> consultarProductosPorProveedor(Proveedor proveedor) throws PersistenciaException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public List<Producto> consultarProductosPorNombre(String nombreProducto) throws PersistenciaException {
+        try {
+            FindIterable<Producto> resultado = COLECCION_PRODUCTOS.find(eq("nombre", nombreProducto));
+            ArrayList<Producto> productos = new ArrayList<>();
+            for (Producto producto : resultado) {
+                productos.add(producto);
+            }
+            return productos;
+        } catch (Exception e) {
+            throw new PersistenciaException("Ocurrio un error al obtener los productos");
+        }
     }
 
     @Override
     public void registrarProducto(Producto producto) throws PersistenciaException {
         try {
-             COLECCION_PRODUCTOS.insertOne(producto);
+            COLECCION_PRODUCTOS.insertOne(producto);
         } catch (MongoException e) {
             throw new PersistenciaException("Ya existe un producto registrado con este código, intente de nuevo con otro código");
         }
@@ -94,34 +99,31 @@ public class GestorProductos implements IGestorProductos {
 
     @Override
     public Producto consultarProducto(String codigoProducto) throws PersistenciaException {
-        FindIterable<Producto> resultado = COLECCION_PRODUCTOS.find(eq("codigo", codigoProducto));
-        return resultado.first();
+        try {
+            FindIterable<Producto> resultado = COLECCION_PRODUCTOS.find(eq("codigo", codigoProducto));
+            return resultado.first();
+        } catch (Exception e) {
+            throw new PersistenciaException("Ocurrio un error al obtener el producto");
+        }
     }
 
     @Override
     public Producto consultarProducto(ObjectId productoId) throws PersistenciaException {
-        FindIterable<Producto> resultado = COLECCION_PRODUCTOS.find(eq("_id", productoId));
-        return resultado.first();
+        try {
+            FindIterable<Producto> resultado = COLECCION_PRODUCTOS.find(eq("_id", productoId));
+            return resultado.first();
+        } catch (Exception e) {
+            throw new PersistenciaException("Ocurrio un error al obtener el producto");
+        }
     }
 
     @Override
-    public void actualizarProducto(Producto producto) throws PersistenciaException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void eliminarProducto(String codigoProducto) throws PersistenciaException {
-        COLECCION_PRODUCTOS.updateOne(eq("codigo", codigoProducto), set("eliminado", true));
-    }
-
-    @Override
-    public void registrarExistenciaProducto(ObjectId producto, int cantidad) throws PersistenciaException {
-        COLECCION_PRODUCTOS.updateOne(eq("_id", producto), inc("stock", cantidad));
-    }
-
-    @Override
-    public void eliminarInventarioProducto(String codigoProducto) throws PersistenciaException {
-        COLECCION_PRODUCTOS.deleteOne(eq("codigo", codigoProducto));
+    public void registrarCambioStock(ObjectId producto, int cantidad) throws PersistenciaException {
+        try {
+            COLECCION_PRODUCTOS.updateOne(eq("_id", producto), inc("stock", cantidad));
+        } catch (Exception e) {
+            throw new PersistenciaException("Ocurrio un error al registrar el cambio de stock");
+        }
     }
 
 }

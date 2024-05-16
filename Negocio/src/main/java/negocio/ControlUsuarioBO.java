@@ -23,12 +23,13 @@ import pojos.Usuario;
 public class ControlUsuarioBO implements IControlUsuarioBO {
 
     private final IGestorUsuarios GESTOR_USUARIOS = GestorUsuarios.getInstance();
+    private final ConvertidorUsuario CONVERTIDOR = new ConvertidorUsuario();
 
     @Override
     public List<UsuarioDTO> obtenerUsuarios() throws NegocioException {
         try {
             List<Usuario> usuarios = GESTOR_USUARIOS.consultarTodos();
-            return new ConvertidorUsuario().createFromPojos(usuarios);
+            return CONVERTIDOR.createFromPojos(usuarios);
         } catch (PersistenciaException ex) {
             Logger.getLogger(ControlUsuarioBO.class.getName()).log(Level.SEVERE, null, ex);
             throw new NegocioException(ex.getMessage());
@@ -38,7 +39,7 @@ public class ControlUsuarioBO implements IControlUsuarioBO {
     @Override
     public void registrarUsuario(UsuarioDTO usuarioDTO) throws NegocioException {
         try {
-            Usuario usuario = new ConvertidorUsuario().convertFromDto(usuarioDTO);
+            Usuario usuario = CONVERTIDOR.convertFromDto(usuarioDTO);
             usuario.setFechaContratacion(LocalDate.now());
             GESTOR_USUARIOS.registrarUsuario(usuario);
         } catch (PersistenciaException ex) {

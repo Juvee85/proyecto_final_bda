@@ -23,13 +23,14 @@ import pojos.Producto;
 public class ControlProductosBO implements IControlProductoBO {
 
     private final IGestorProductos GESTOR_PRODUCTOS = GestorProductos.getInstance();
+    private final ConvertidorProducto CONVERTIDOR = new ConvertidorProducto();
 
     @Override
     public ProductoDTO obtenerProductoPorCodigo(String codigo) throws NegocioException {
         try {
             Producto producto = GESTOR_PRODUCTOS.consultarProducto(codigo);
 
-            return new ConvertidorProducto().convertFromPojo(producto);
+            return CONVERTIDOR.convertFromPojo(producto);
         } catch (PersistenciaException ex) {
             Logger.getLogger(ControlProductosBO.class.getName()).log(Level.SEVERE, null, ex);
             throw new NegocioException(ex.getMessage());
@@ -41,7 +42,7 @@ public class ControlProductosBO implements IControlProductoBO {
         try {
             List<Producto> consulta = GESTOR_PRODUCTOS.consultarTodos();
 
-            return new ConvertidorProducto().createFromPojos(consulta);
+            return CONVERTIDOR.createFromPojos(consulta);
         } catch (PersistenciaException ex) {
             Logger.getLogger(ControlProductosBO.class.getName()).log(Level.SEVERE, null, ex);
             throw new NegocioException(ex.getMessage());
@@ -53,7 +54,7 @@ public class ControlProductosBO implements IControlProductoBO {
         try {
             List<Producto> consulta = GESTOR_PRODUCTOS.consultarProductosConStock();
 
-            return new ConvertidorProducto().createFromPojos(consulta);
+            return CONVERTIDOR.createFromPojos(consulta);
         } catch (PersistenciaException ex) {
             Logger.getLogger(ControlProductosBO.class.getName()).log(Level.SEVERE, null, ex);
             throw new NegocioException(ex.getMessage());
@@ -63,7 +64,7 @@ public class ControlProductosBO implements IControlProductoBO {
     @Override
     public void registrarProducto(ProductoDTO dto) throws NegocioException {
         try {
-            Producto producto = new ConvertidorProducto().convertFromDto(dto);
+            Producto producto = CONVERTIDOR.convertFromDto(dto);
             producto.setStock(0);
             producto.setFechaRegistro(LocalDate.now());
             GESTOR_PRODUCTOS.registrarProducto(producto);
